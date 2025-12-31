@@ -1,93 +1,94 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>My Wallet</title>
-
 <style>
 body{
-    margin:0;
-    font-family:Arial;
+    font-family: Arial;
     background:#111;
     color:white;
+    padding:20px;
+}
+.card{
+    max-width:400px;
+    margin:auto;
+    background:#1c1c1c;
+    padding:20px;
+    border-radius:10px;
     text-align:center;
 }
-.header{
-    padding:15px;
-    background:#222;
-    font-size:20px;
-}
-.balance-box{
-    margin:40px auto;
-    width:90%;
-    max-width:350px;
-    background:#1e1e1e;
-    padding:20px;
-    border-radius:12px;
-}
-.balance{
-    font-size:32px;
-    color:#00ff99;
-    margin:15px 0;
-}
 button{
-    padding:12px 20px;
-    font-size:16px;
+    width:100%;
+    padding:12px;
+    margin-top:10px;
     border:none;
-    border-radius:8px;
-    background:#ff9900;
+    border-radius:6px;
+    font-size:16px;
     cursor:pointer;
 }
+.deposit{background:#ff9800;}
+.withdraw{background:#e53935;color:white;}
 </style>
 </head>
-
 <body>
 
-<div class="header">💰 My Wallet</div>
+<div class="card">
+    <h2>💰 My Wallet</h2>
+    <h1 id="balance">৳0</h1>
 
-<div class="balance-box">
-    <div>Current Balance</div>
-    <div class="balance" id="balance">৳0</div>
-    <button onclick="addMoney()">Add ৳100</button>
+    <input type="number" id="amount" placeholder="Enter Amount">
+    <button class="deposit" onclick="deposit()">Deposit Request</button>
+    <button class="withdraw" onclick="withdraw()">Withdraw</button>
 </div>
 
-<!-- Firebase -->
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
-import { getFirestore, doc, getDoc, setDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyBKzB2v0xKe5_3FkOJ4lFct42qDa5IhhgU",
-  authDomain: "free-fire-site.firebaseapp.com",
-  projectId: "free-fire-site",
-  storageBucket: "free-fire-site.firebasestorage.app",
-  messagingSenderId: "1078452484864",
-  appId: "1:1078452484864:web:5395a38a0c4181a3dcd1e5"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-// demo user
-const uid = "demo-user";
-const walletRef = doc(db, "wallets", uid);
-
-async function loadBalance(){
-    const snap = await getDoc(walletRef);
-    if(snap.exists()){
-        document.getElementById("balance").innerText = "৳" + snap.data().balance;
-    }else{
-        await setDoc(walletRef,{balance:0});
-    }
+<script>
+let user = JSON.parse(localStorage.getItem("loggedUser"));
+if(!user){
+    alert("Please login first");
+    window.location.href="login.html";
 }
-loadBalance();
 
-window.addMoney = async function(){
-    await updateDoc(walletRef,{
-        balance: increment(100)
+document.getElementById("balance").innerText = "৳"+user.balance;
+
+// ===== DEPOSIT =====
+function deposit(){
+    let amt = Number(document.getElementById("amount").value);
+    if(amt<=0) return alert("Invalid amount");
+
+    let deposits = JSON.parse(localStorage.getItem("depositRequests")) || [];
+    deposits.push({
+        email:user.email,
+        amount:amt,
+        status:"pending"
     });
-    loadBalance();
+
+    localStorage.setItem("depositRequests", JSON.stringify(deposits));
+    alert("Deposit request sent to Admin");
+}
+
+// ===== WITHDRAW =====
+function withdraw(){
+    let amt = Number(document.getElementById("amount").value);
+    if(amt<=0 || amt>user.balance) return alert("Invalid amount");
+
+    user.balance -= amt;
+    localStorage.setItem("loggedUser", JSON.stringify(user));
+
+    let users = JSON.parse(localStorage.getItem("users"));
+    let u = users.find(x=>x.email===user.email);
+    u.balance = user.balance;
+    localStorage.setItem("users", JSON.stringify(users));
+
+    let withdraws = JSON.parse(localStorage.getItem("withdrawRequests")) || [];
+    withdraws.push({
+        email:user.email,
+        amount:amt,
+        time:new Date().toLocaleString()
+    });
+    localStorage.setItem("withdrawRequests", JSON.stringify(withdraws));
+
+    alert("Withdraw request sent");
+    location.reload();
 }
 </script>
 
