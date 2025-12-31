@@ -4,39 +4,50 @@
 <title>Withdraw</title>
 <style>
 body{font-family:Arial;background:#f2f2f2;padding:20px}
-.box{background:#fff;padding:20px;border-radius:10px;max-width:400px;margin:auto}
-input,button{width:100%;padding:12px;margin-top:10px}
-button{background:red;color:#fff;border:none;font-size:18px}
+.card{background:#fff;padding:20px;border-radius:12px}
+input,select{width:100%;padding:10px;margin:8px 0}
+button{width:100%;padding:12px;background:green;color:#fff;border:none;border-radius:8px}
 </style>
 </head>
 <body>
 
-<div class="box">
 <h2>Withdraw</h2>
-<input id="amount" type="number" placeholder="Amount">
-<input id="number" placeholder="bKash/Nagad Number">
-<button onclick="withdraw()">Submit</button>
+
+<div class="card">
+<select id="method">
+<option>bKash</option>
+<option>Nagad</option>
+</select>
+
+<input id="number" placeholder="Your Number">
+<input id="amount" placeholder="Amount">
+
+<button onclick="withdraw()">Submit Withdraw Request</button>
 </div>
 
 <script>
 function withdraw(){
-let user = JSON.parse(localStorage.getItem("loggedUser"));
-let users = JSON.parse(localStorage.getItem("users")) || [];
-let me = users.find(u=>u.email===user.email);
+let user = JSON.parse(localStorage.getItem("loggedInUser"));
+let amt = parseInt(document.getElementById("amount").value);
 
-let amount = parseInt(document.getElementById("amount").value);
-let number = document.getElementById("number").value;
-
-if(amount>me.balance){alert("Insufficient balance");return;}
+if(user.balance < amt){
+alert("Insufficient balance");
+return;
+}
 
 let reqs = JSON.parse(localStorage.getItem("withdrawRequests")) || [];
-reqs.push({email:user.email,amount,number});
+reqs.push({
+email:user.email,
+amount:amt,
+number:document.getElementById("number").value,
+method:document.getElementById("method").value
+});
 
-me.balance -= amount;
-localStorage.setItem("users",JSON.stringify(users));
+user.balance -= amt;
+localStorage.setItem("loggedInUser",JSON.stringify(user));
+
 localStorage.setItem("withdrawRequests",JSON.stringify(reqs));
-
-alert("Withdraw request sent");
+alert("Withdraw request sent!");
 location.href="wallet.html";
 }
 </script>
