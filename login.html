@@ -8,23 +8,27 @@
     <style>
         body {
             margin: 0;
-            font-family: Arial;
-            background: #f2f2f2;
-            padding: 20px;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #141e30, #243b55);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .box {
+            background: #ffffff;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            max-width: 400px;
+            width: 100%;
         }
 
         h1 {
             text-align: center;
             margin-bottom: 20px;
-        }
-
-        .box {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-            max-width: 400px;
-            margin: auto;
+            color: #243b55;
         }
 
         input {
@@ -46,13 +50,23 @@
             font-size: 18px;
             font-weight: bold;
             cursor: pointer;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background: #0053c7;
         }
 
         p {
-            margin-top: 10px;
+            margin-top: 15px;
             text-align: center;
         }
-        a { color: #006eff; font-weight: bold; }
+
+        a {
+            color: #006eff;
+            font-weight: bold;
+            text-decoration: none;
+        }
     </style>
 </head>
 
@@ -69,35 +83,34 @@
         <p>Don't have an account? <a href="signup.html">Signup</a></p>
     </div>
 
-
 <script>
 function login() {
     let email = document.getElementById("email").value.trim();
     let pass = document.getElementById("password").value.trim();
 
     if (!email || !pass) {
-        alert("Please fill all fields");
+        alert("সব ফিল্ড পূরণ করুন");
         return;
     }
 
-    // === ADMIN LOGIN ===
+    // ===== ADMIN LOGIN =====
     if (email === "mrajuan203@gmail.com" && pass === "Robiul5Nasima") {
         localStorage.setItem("adminLogged", "true");
-        alert("Admin Login Success!");
+        alert("Admin Login Successful!");
         window.location.href = "admin-dashboard.html";
         return;
     }
 
-    // === USER LOGIN ===
+    // ===== USER LOGIN =====
     let users = JSON.parse(localStorage.getItem("users")) || [];
-    let found = users.find(u => u.email === email && u.password === pass);
+    let user = users.find(u => u.email === email && u.password === pass);
 
-    if (!found) {
-        alert("Invalid Email or Password!");
+    if (!user) {
+        alert("ভুল Email অথবা Password");
         return;
     }
 
-    localStorage.setItem("loggedUser", JSON.stringify(found));
+    localStorage.setItem("loggedUser", JSON.stringify(user));
     alert("Login Successful!");
     window.location.href = "index.html";
 }
