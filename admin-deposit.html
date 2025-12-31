@@ -1,18 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Admin Deposit Requests</title>
+    <title>Deposit Requests</title>
     <style>
-        body {
-            font-family: Arial;
-            padding: 20px;
-            background: #f2f2f2;
-        }
-
-        h2 {
-            text-align: center;
-            margin-bottom: 20px;
-        }
+        body { font-family: Arial; padding: 20px; background:#f2f2f2; }
 
         .req {
             background: #fff;
@@ -22,13 +13,10 @@
             box-shadow: 0 3px 10px rgba(0,0,0,0.1);
         }
 
-        .req p {
-            margin: 6px 0;
-            font-size: 15px;
-        }
+        .req p { margin: 5px 0; }
 
         button {
-            padding: 8px 14px;
+            padding: 8px 12px;
             border: none;
             border-radius: 6px;
             margin-right: 5px;
@@ -36,39 +24,30 @@
             font-weight: bold;
         }
 
-        .approve {
-            background: green;
-            color: #fff;
-        }
-
-        .reject {
-            background: red;
-            color: #fff;
-        }
+        .approve { background: green; color: #fff; }
+        .reject { background: red; color: #fff; }
     </style>
 </head>
 <body>
 
 <h2>Deposit Requests</h2>
-
 <div id="list"></div>
 
 <script>
 function loadDepositRequests() {
     let requests = JSON.parse(localStorage.getItem("depositRequests")) || [];
     let list = document.getElementById("list");
-
     list.innerHTML = "";
 
     if (requests.length === 0) {
-        list.innerHTML = "<p style='text-align:center;'>No deposit requests found.</p>";
+        list.innerHTML = "<p>No deposit requests found.</p>";
         return;
     }
 
     requests.forEach((req, index) => {
         list.innerHTML += `
             <div class="req">
-                <p><b>User Email:</b> ${req.email}</p>
+                <p><b>User:</b> ${req.email}</p>
                 <p><b>Amount:</b> ${req.amount} TK</p>
                 <p><b>Method:</b> ${req.method}</p>
                 <p><b>Number:</b> ${req.number}</p>
@@ -84,29 +63,32 @@ function loadDepositRequests() {
 function approveDeposit(index) {
     let requests = JSON.parse(localStorage.getItem("depositRequests")) || [];
     let users = JSON.parse(localStorage.getItem("users")) || [];
+    let loggedUser = JSON.parse(localStorage.getItem("loggedUser"));
 
     let req = requests[index];
     let user = users.find(u => u.email === req.email);
 
-    if (!user) {
-        alert("User not found!");
-        return;
+    if (user) {
+        user.balance = (user.balance || 0) + Number(req.amount);
+
+        // যদি এই user এখন লগইন করা থাকে
+        if (loggedUser && loggedUser.email === user.email) {
+            loggedUser.balance = user.balance;
+            localStorage.setItem("loggedUser", JSON.stringify(loggedUser));
+        }
+
+        localStorage.setItem("users", JSON.stringify(users));
     }
-
-    user.balance = (user.balance || 0) + parseInt(req.amount);
-
-    localStorage.setItem("users", JSON.stringify(users));
 
     requests.splice(index, 1);
     localStorage.setItem("depositRequests", JSON.stringify(requests));
 
-    alert("Deposit Approved & Balance Updated!");
+    alert("Deposit Approved Successfully!");
     loadDepositRequests();
 }
 
 function rejectDeposit(index) {
     let requests = JSON.parse(localStorage.getItem("depositRequests")) || [];
-
     requests.splice(index, 1);
     localStorage.setItem("depositRequests", JSON.stringify(requests));
 
