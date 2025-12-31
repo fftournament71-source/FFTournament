@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Balance</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #f2f2f2;
+            padding: 20px;
+        }
+        .box {
+            max-width: 400px;
+            background: #fff;
+            padding: 20px;
+            margin: auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        input, select {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        h2 { text-align: center; }
+    </style>
+</head>
+<body>
+
+<div class="box">
+    <h2>Add Money</h2>
+
+    <input type="number" id="amount" placeholder="Enter Amount">
+
+    <select id="method">
+        <option value="">Select Method</option>
+        <option value="Bkash">Bkash</option>
+        <option value="Nagad">Nagad</option>
+    </select>
+
+    <input type="text" id="number" placeholder="Sender Number">
+    <input type="text" id="txid" placeholder="Transaction ID">
+
+    <button onclick="deposit()">Submit Deposit</button>
+</div>
+
+<script>
+function deposit() {
+    let amount = document.getElementById("amount").value;
+    let method = document.getElementById("method").value;
+    let number = document.getElementById("number").value;
+    let txid = document.getElementById("txid").value;
+
+    let user = JSON.parse(localStorage.getItem("loggedUser"));
+
+    if (!user) {
+        alert("Login required!");
+        return;
+    }
+
+    if (!amount || !method || !number || !txid) {
+        alert("Fill all fields");
+        return;
+    }
+
+    let requests = JSON.parse(localStorage.getItem("depositRequests")) || [];
+
+    requests.push({
+        email: user.email,
+        amount: amount,
+        method: method,
+        number: number,
+        txid: txid
+    });
+
+    localStorage.setItem("depositRequests", JSON.stringify(requests));
+
+    alert("Deposit request sent! Wait for admin approval.");
+    window.location.href = "wallet.html";
+}
+</script>
+
+</body>
+</html>
