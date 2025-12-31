@@ -1,86 +1,131 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+<meta charset="UTF-8">
 <title>Add Money</title>
 <style>
-body{font-family:Arial;background:#eef2f7;padding:20px}
-.box{background:#fff;padding:20px;border-radius:14px;max-width:420px;margin:auto}
-.method button{padding:10px;border:2px solid #0a7;border-radius:8px;margin:5px;cursor:pointer}
-.active{background:#0a7;color:#fff}
-input,select{width:100%;padding:10px;margin:8px 0;border-radius:6px;border:1px solid #ccc}
-.submit{background:#0a7;color:#fff;border:none;padding:14px;width:100%;font-size:18px;border-radius:10px}
-.info{background:#e6f8f2;padding:10px;border-left:5px solid #0a7;margin-bottom:10px}
+body{
+    background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+    font-family:Arial;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+.card{
+    background:#fff;
+    width:360px;
+    padding:25px;
+    border-radius:15px;
+    box-shadow:0 15px 40px rgba(0,0,0,.3);
+}
+h2{text-align:center;margin-bottom:15px}
+.methods button{
+    width:48%;
+    padding:10px;
+    border-radius:8px;
+    border:2px solid #ddd;
+    cursor:pointer;
+    font-weight:bold;
+}
+.methods .active{
+    border-color:#00c853;
+    background:#e8f5e9;
+}
+.info{
+    background:#f5f5f5;
+    padding:10px;
+    border-left:5px solid #00c853;
+    margin:12px 0;
+}
+input{
+    width:100%;
+    padding:10px;
+    margin:8px 0;
+    border-radius:6px;
+    border:1px solid #ccc;
+}
+.submit{
+    width:100%;
+    background:#00c853;
+    color:#fff;
+    padding:12px;
+    border:none;
+    border-radius:8px;
+    font-size:16px;
+    cursor:pointer;
+}
+small{display:block;text-align:center;margin-top:10px}
 </style>
 </head>
 <body>
 
-<div class="box">
-<h2>💰 Add Money</h2>
+<div class="card">
+<h2>💳 Add Money</h2>
 
-<div class="method">
-    <button id="bkash" class="active" onclick="setMethod('bKash')">bKash</button>
-    <button id="nagad" onclick="setMethod('Nagad')">Nagad</button>
+<div class="methods">
+<button id="bkashBtn" class="active" onclick="setMethod('bKash')">bKash</button>
+<button id="nagadBtn" onclick="setMethod('Nagad')">Nagad</button>
 </div>
 
-<div class="info" id="payinfo">
-<b>bKash Number:</b> 01773170184<br>
+<div class="info" id="payInfo">
+<b>bKash Payment Number:</b><br>
+01773170184<br>
 এই নাম্বারে টাকা পাঠিয়ে TxID দিন
 </div>
 
-<input id="amount" placeholder="Enter Amount">
-<input id="number" placeholder="Your Mobile Number">
-<input id="txid" placeholder="Transaction ID">
+<input type="number" id="amount" placeholder="Enter Amount">
+<input type="text" id="number" placeholder="Your Mobile Number">
+<input type="text" id="txid" placeholder="Transaction ID">
 
 <button class="submit" onclick="submitDeposit()">Submit Deposit Request</button>
-<p style="font-size:13px;text-align:center">Admin approve করলে টাকা wallet এ যোগ হবে</p>
+
+<small>Admin approve করলে টাকা Wallet এ যোগ হবে</small>
 </div>
 
 <script>
 let method="bKash";
 
+let user=JSON.parse(localStorage.getItem("loggedUser"));
+if(!user){ location.href="login.html"; }
+
 function setMethod(m){
     method=m;
-    document.getElementById("bkash").classList.remove("active");
-    document.getElementById("nagad").classList.remove("active");
-    document.getElementById(m.toLowerCase()).classList.add("active");
+    bkashBtn.classList.remove("active");
+    nagadBtn.classList.remove("active");
+    (m==="bKash"?bkashBtn:nagadBtn).classList.add("active");
 
-    document.getElementById("payinfo").innerHTML=
-        `<b>${m} Number:</b> 01773170184<br>এই নাম্বারে টাকা পাঠিয়ে TxID দিন`;
+    payInfo.innerHTML = m==="bKash"
+    ? `<b>bKash Payment Number:</b><br>01773170184<br>এই নাম্বারে টাকা পাঠিয়ে TxID দিন`
+    : `<b>Nagad Payment Number:</b><br>01773170184<br>এই নাম্বারে টাকা পাঠিয়ে TxID দিন`;
 }
 
 function submitDeposit(){
-    let user=JSON.parse(localStorage.getItem("loggedInUser"));
-    if(!user){alert("Login first");return;}
+    let amount=amount.value;
+    let number=number.value;
+    let txid=txid.value;
 
-    let amount=amountInput.value;
-    let number=numberInput.value;
-    let txid=txidInput.value;
-
-    if(!amount||!number||!txid){
-        alert("Fill all fields");
+    if(!amount || !number || !txid){
+        alert("সব তথ্য পূরণ করুন");
         return;
     }
 
-    let reqs=JSON.parse(localStorage.getItem("depositRequests"))||[];
-    reqs.push({
+    let requests=JSON.parse(localStorage.getItem("depositRequests"))||[];
+
+    requests.push({
         email:user.email,
-        amount:parseInt(amount),
+        amount:amount,
+        method:method,
         number:number,
         txid:txid,
-        method:method,
         time:new Date().toLocaleString()
     });
-    localStorage.setItem("depositRequests",JSON.stringify(reqs));
 
-    alert("✅ Deposit request sent to admin");
+    localStorage.setItem("depositRequests",JSON.stringify(requests));
+    alert("Deposit request sent!");
     location.href="wallet.html";
 }
-
-const amountInput=document.getElementById("amount");
-const numberInput=document.getElementById("number");
-const txidInput=document.getElementById("txid");
 </script>
 
 </body>
 </html>
-
