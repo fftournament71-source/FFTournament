@@ -12,72 +12,47 @@ body {
     background: url("images/IMG_20251204_191555_241.png") no-repeat center center fixed;
     background-size: cover;
 }
-
-/* ডার্ক শেড + Blur Effect */
 body::before {
     content: "";
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
     background: rgba(0,0,0,0.55);
     backdrop-filter: blur(3px);
     z-index: -1;
 }
-
 .header {
     background: rgba(255,255,255,0.9);
     padding: 15px;
     font-size: 22px;
     font-weight: bold;
     text-align: center;
-    backdrop-filter: blur(3px);
-    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
 }
-
 h2 {
     margin: 20px;
     font-size: 22px;
-    font-weight: bold;
     color: white;
 }
-
 .card-container {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 15px;
     padding: 15px;
 }
-
 .card {
     background: rgba(255,255,255,0.85);
     border-radius: 12px;
     overflow: hidden;
-    backdrop-filter: blur(3px);
-    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
     cursor: pointer;
 }
-
 .card img {
     width: 100%;
     height: 150px;
     object-fit: cover;
 }
-
-.card-text {
-    padding: 10px;
-}
-
-.card-title {
-    font-size: 18px;
-    font-weight: bold;
-}
-
-.card-sub {
-    font-size: 14px;
-    color: gray;
-}
+.card-text { padding: 10px; }
+.card-title { font-size: 18px; font-weight: bold; }
+.card-sub { font-size: 14px; color: gray; }
 
 .bottom-nav {
     position: fixed;
@@ -87,17 +62,11 @@ h2 {
     display: flex;
     justify-content: space-around;
     padding: 12px 0;
-    backdrop-filter: blur(3px);
-    box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
 }
-
 .bottom-nav a {
     text-decoration: none;
     color: #333;
-    font-size: 14px;
-    text-align: center;
 }
-
 .bottom-nav a.active {
     color: #ff9900;
     font-weight: bold;
@@ -108,7 +77,6 @@ h2 {
 <body>
 
 <div class="header">খেলো বাংলাদেশ</div>
-
 <h2>FREE FIRE</h2>
 
 <div class="card-container">
@@ -156,21 +124,43 @@ h2 {
 
 <script>
 function openMatch(type) {
-    if (type === "br") {
-        window.location.href = "br-matches.html";
-    }
-    else if (type === "cs") {
-        window.location.href = "cs-matches.html";
-    }
-    else if (type === "lone") {
-        window.location.href = "lone-matches.html";
-    }
-    else if (type === "2v2") {
-        window.location.href = "2v2-matches.html";
-    }
+    if (type === "br") location.href = "br-matches.html";
+    if (type === "cs") location.href = "cs-matches.html";
+    if (type === "lone") location.href = "lone-matches.html";
+    if (type === "2v2") location.href = "2v2-matches.html";
 }
 </script>
 
-<script src="match-count.js"></script>
+<!-- 🔥 FIREBASE + MATCH COUNT -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBKzB2v0xKe5_3FkOJ4lFct42qDa5IhhgU",
+  authDomain: "free-fire-site.firebaseapp.com",
+  projectId: "free-fire-site",
+  storageBucket: "free-fire-site.firebasestorage.app",
+  messagingSenderId: "1078452484864",
+  appId: "1:1078452484864:web:5395a38a0c4181a3dcd1e5"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+function liveCount(docId, elId) {
+  const ref = doc(db, "matches", docId);
+  onSnapshot(ref, snap => {
+    document.getElementById(elId).innerText =
+      snap.exists() ? snap.data().count + " টি ম্যাচ" : "0 টি ম্যাচ";
+  });
+}
+
+liveCount("br", "br-count");
+liveCount("cs", "cs-count");
+liveCount("lone", "lone-count");
+liveCount("2v2", "vs-count");
+</script>
+
 </body>
 </html>
