@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>খেলো বাংলাদেশ</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial;
+    background: url("images/IMG_20251204_191555_241.png") no-repeat center center fixed;
+    background-size: cover;
+}
+
+/* ডার্ক শেড + Blur Effect */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.55);
+    backdrop-filter: blur(3px);
+    z-index: -1;
+}
+
+.header {
+    background: rgba(255,255,255,0.9);
+    padding: 15px;
+    font-size: 22px;
+    font-weight: bold;
+    text-align: center;
+    backdrop-filter: blur(3px);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+
+h2 {
+    margin: 20px;
+    font-size: 22px;
+    font-weight: bold;
+    color: white;
+}
+
+.card-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    padding: 15px;
+}
+
+.card {
+    background: rgba(255,255,255,0.85);
+    border-radius: 12px;
+    overflow: hidden;
+    backdrop-filter: blur(3px);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    cursor: pointer;
+}
+
+.card img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+}
+
+.card-text {
+    padding: 10px;
+}
+
+.card-title {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.card-sub {
+    font-size: 14px;
+    color: gray;
+}
+
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background: rgba(255,255,255,0.9);
+    display: flex;
+    justify-content: space-around;
+    padding: 12px 0;
+    backdrop-filter: blur(3px);
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
+}
+
+.bottom-nav a {
+    text-decoration: none;
+    color: #333;
+    font-size: 14px;
+    text-align: center;
+}
+
+.bottom-nav a.active {
+    color: #ff9900;
+    font-weight: bold;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">খেলো বাংলাদেশ</div>
+
+<h2>FREE FIRE</h2>
+
+<div class="card-container">
+
+    <div class="card" onclick="openMatch('br')">
+        <img src="images/br.jpg">
+        <div class="card-text">
+            <div class="card-title">BR MATCH</div>
+            <div class="card-sub" id="br-count">Loading...</div>
+        </div>
+    </div>
+
+    <div class="card" onclick="openMatch('cs')">
+        <img src="images/clash.jpg">
+        <div class="card-text">
+            <div class="card-title">Clash Squad</div>
+            <div class="card-sub" id="cs-count">Loading...</div>
+        </div>
+    </div>
+
+    <div class="card" onclick="openMatch('lone')">
+        <img src="images/lone.jpg">
+        <div class="card-text">
+            <div class="card-title">Lone Wolf</div>
+            <div class="card-sub" id="lone-count">Loading...</div>
+        </div>
+    </div>
+
+    <div class="card" onclick="openMatch('2v2')">
+        <img src="images/cs2.jpg">
+        <div class="card-text">
+            <div class="card-title">CS 2 vs 2</div>
+            <div class="card-sub" id="vs-count">Loading...</div>
+        </div>
+    </div>
+
+</div>
+
+<div class="bottom-nav">
+    <a href="index.html" class="active">🎮 Play</a>
+    <a href="matches.html">📄 My Matches</a>
+    <a href="results.html">📊 Results</a>
+    <a href="profile.html">👤 Profile</a>
+</div>
+
+<script>
+function openMatch(type) {
+    if (type === "br") {
+        window.location.href = "br-matches.html";
+    }
+    else if (type === "cs") {
+        window.location.href = "cs-matches.html";
+    }
+    else if (type === "lone") {
+        window.location.href = "lone-matches.html";
+    }
+    else if (type === "2v2") {
+        window.location.href = "2v2-matches.html";
+    }
+}
+</script>
+
+<script src="match-count.js"></script>
+</body>
+</html>
