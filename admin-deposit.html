@@ -4,8 +4,19 @@
 <title>Admin Deposit</title>
 <style>
 body{font-family:Arial;background:#f2f2f2;padding:20px}
-.req{background:#fff;padding:15px;border-radius:10px;margin-bottom:10px}
-button{padding:8px 12px;border:none;border-radius:6px;color:#fff;font-weight:bold;cursor:pointer}
+.req{
+    background:#fff;
+    padding:15px;
+    border-radius:10px;
+    margin-bottom:10px;
+}
+button{
+    padding:8px 12px;
+    border:none;
+    border-radius:6px;
+    color:#fff;
+    cursor:pointer;
+}
 .approve{background:green}
 .reject{background:red}
 </style>
@@ -17,50 +28,60 @@ button{padding:8px 12px;border:none;border-radius:6px;color:#fff;font-weight:bol
 
 <script>
 function load(){
-    let reqs=JSON.parse(localStorage.getItem("depositRequests"))||[];
-    let users=JSON.parse(localStorage.getItem("users"))||[];
-    let list=document.getElementById("list");
-    list.innerHTML="";
+let reqs=JSON.parse(localStorage.getItem("depositRequests"))||[];
+let users=JSON.parse(localStorage.getItem("users"))||[];
+list.innerHTML="";
 
-    if(reqs.length==0){
-        list.innerHTML="<p>No requests</p>";
-        return;
-    }
+if(reqs.length===0){
+    list.innerHTML="No requests";
+    return;
+}
 
-    reqs.forEach((r,i)=>{
-        list.innerHTML+=`
-        <div class="req">
-        <p><b>Email:</b> ${r.email}</p>
-        <p><b>Amount:</b> ${r.amount}</p>
-        <p><b>Method:</b> ${r.method}</p>
-        <p><b>Number:</b> ${r.number}</p>
-        <p><b>TxID:</b> ${r.txid}</p>
-        <button class="approve" onclick="approve(${i})">Approve</button>
-        <button class="reject" onclick="reject(${i})">Reject</button>
-        </div>`;
-    });
+reqs.forEach((r,i)=>{
+list.innerHTML+=`
+<div class="req">
+<p><b>${r.email}</b></p>
+<p>Amount: ${r.amount}</p>
+<p>Method: ${r.method}</p>
+<p>Number: ${r.number}</p>
+<p>TXID: ${r.txid}</p>
+<button class="approve" onclick="approve(${i})">Approve</button>
+<button class="reject" onclick="reject(${i})">Reject</button>
+</div>`;
+});
 }
 
 function approve(i){
-    let reqs=JSON.parse(localStorage.getItem("depositRequests"));
-    let users=JSON.parse(localStorage.getItem("users"));
-    let r=reqs[i];
-    let u=users.find(x=>x.email===r.email);
-    if(u){u.balance+=r.amount;}
+let reqs=JSON.parse(localStorage.getItem("depositRequests"));
+let users=JSON.parse(localStorage.getItem("users"));
+let r=reqs[i];
+let u=users.find(x=>x.email===r.email);
+
+if(u){
+    u.balance+=parseInt(r.amount);
     localStorage.setItem("users",JSON.stringify(users));
-    reqs.splice(i,1);
-    localStorage.setItem("depositRequests",JSON.stringify(reqs));
-    alert("Approved!");
-    load();
+
+    let logged=JSON.parse(localStorage.getItem("loggedUser"));
+    if(logged && logged.email===u.email){
+        logged.balance=u.balance;
+        localStorage.setItem("loggedUser",JSON.stringify(logged));
+    }
+}
+
+reqs.splice(i,1);
+localStorage.setItem("depositRequests",JSON.stringify(reqs));
+alert("Approved");
+load();
 }
 
 function reject(i){
-    let reqs=JSON.parse(localStorage.getItem("depositRequests"));
-    reqs.splice(i,1);
-    localStorage.setItem("depositRequests",JSON.stringify(reqs));
-    alert("Rejected");
-    load();
+let reqs=JSON.parse(localStorage.getItem("depositRequests"));
+reqs.splice(i,1);
+localStorage.setItem("depositRequests",JSON.stringify(reqs));
+alert("Rejected");
+load();
 }
+
 load();
 </script>
 
