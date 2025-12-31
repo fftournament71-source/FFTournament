@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" /><meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>BR Matches</title>
+<style>
+ body{font-family:Arial;background:#f7f7f7;padding:18px}
+ h1{margin:0 0 14px 0}
+ .card{background:#fff;border-radius:10px;padding:14px;margin-bottom:12px;box-shadow:0 6px 18px rgba(0,0,0,.06)}
+ button{padding:10px;border-radius:8px;border:0;background:#5b8cff;color:#fff}
+ .adminBox{background:#fff;padding:12px;border-radius:10px;margin-bottom:14px;box-shadow:0 4px 12px rgba(0,0,0,.05)}
+</style>
+</head>
+<body>
+<h1>BR Matches</h1>
+
+<div id="adminLoginBox" class="adminBox" style="display:none">
+  <h3>Admin controls</h3>
+  <div>Logged in as <b id="adminName"></b> <button id="adminLogout" style="float:right">Logout</button></div>
+  <button onclick="location.href='admin.html'">Open Admin Panel</button>
+</div>
+
+<div id="matchContainer"></div>
+
+<script>
+(function(){
+  const cur = JSON.parse(localStorage.getItem('currentUser')||'null');
+  if(cur && cur.role==='admin'){
+    document.getElementById('adminLoginBox').style.display='block';
+    document.getElementById('adminName').innerText = cur.name;
+    document.getElementById('adminLogout').onclick = function(){ localStorage.removeItem('currentUser'); location.reload(); };
+  }
+
+  function load(){
+    let arr = JSON.parse(localStorage.getItem('matches')||'[]');
+    const container = document.getElementById('matchContainer');
+    container.innerHTML = '';
+    if(!arr.length) container.innerHTML = '<div class="card">No matches yet.</div>';
+    arr.forEach(m=>{
+      const joinedCount = (m.joined||0);
+      const spotsLeft = (m.maxSpots - joinedCount);
+      container.innerHTML += `
+        <div class="card">
+          <div style="display:flex;gap:12px">
+            <div style="flex:1">
+              <h3 style="margin:0">${m.title}</h3>
+              <div style="color:#c0392b">${m.dateTime || ''}</div>
+              <p><b>WIN PRIZE:</b> ${m.winPrize} TK &nbsp; <b>ENTRY FEE:</b> ${m.entryFee} TK</p>
+              <p><b>PER KILL:</b> ${m.perKill} TK &nbsp; <b>MAP:</b> ${m.map} &nbsp; <b>TYPE:</b> ${m.entryType}</p>
+              <div style="margin-top:8px">
+                <button onclick="joinMatch('${m.id}')">${m.joinedBy && m.joinedBy.includes((cur?cur.id:'-')) ? 'Joined' : 'Join'}</button>
+                <button onclick="viewDetails('${m.id}')">Room Details</button>
+              </div>
+            </div>
+            <div style="width:120px;text-align:center">
+              <div style="background:#f4f4f4;padding:8px;border-radius:6px">#${m.id.slice(-5)}</div>
+              <div style="margin-top:8px">${spotsLeft} spots left</div>
+            </div>
+          </div>
+        </div>
+      `;
+    });
+  }
+  window.load = load;
+
+  window.joinMatch = function(id){
+    // go to join page B option
+    location.href = 'join.html?matchId=' + encodeURIComponent(id);
+  };
+
+  window.viewDetails = function(id){
+    // show room details only if current user joined or admin
+    const cur = JSON.parse(localStorage.getItem('currentUser')||'null');
+    const matches = JSON.parse(localStorage.getItem('matches')||'[]');
+    const m = matches.find(x=>x.id===id);
+    if(!m) return alert('Match not found');
+    if(cur && (cur.role==='admin' || (m.joinedBy && m.joinedBy.includes(cur.id)))){
+      alert('Room: ' + (m.roomCode || 'Not published yet') + '\nPass: ' + (m.roomPass || 'Not published yet'));
+    } else {
+      alert('Only joined players can view room details (or wait until admin publishes).');
+    }
+  };
+
+  load();
+})();
+</script>
+</body>
+</html>
