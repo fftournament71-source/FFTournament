@@ -1,103 +1,45 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Withdraw</title>
-
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f4f4f4;
-            padding: 0;
-            margin: 0;
-        }
-
-        .container {
-            width: 92%;
-            margin: auto;
-            margin-top: 25px;
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 15px #00000022;
-        }
-
-        h2 {
-            text-align: center;
-            color: #333;
-        }
-
-        .input-box {
-            margin-top: 15px;
-        }
-
-        .input-box label {
-            font-weight: bold;
-        }
-
-        .input-box input, select {
-            width: 100%;
-            padding: 12px;
-            border-radius: 7px;
-            border: 1px solid #aaa;
-            margin-top: 8px;
-            font-size: 16px;
-        }
-
-        .btn {
-            width: 100%;
-            padding: 14px;
-            background: #28a745;
-            color: white;
-            border: none;
-            border-radius: 7px;
-            margin-top: 20px;
-            font-size: 18px;
-        }
-
-        .btn:hover {
-            background: #218838;
-        }
-    </style>
-
+<title>Withdraw</title>
+<style>
+body{font-family:Arial;background:#f2f2f2;padding:20px}
+.box{background:#fff;padding:20px;border-radius:10px;max-width:400px;margin:auto}
+input,button{width:100%;padding:12px;margin-top:10px}
+button{background:red;color:#fff;border:none;font-size:18px}
+</style>
 </head>
 <body>
 
-<div class="container">
-    <h2>Withdraw</h2>
-
-    <div class="input-box">
-        <label>Select Method</label>
-        <select id="method">
-            <option value="bkash">Bkash</option>
-            <option value="nagad">Nagad</option>
-        </select>
-    </div>
-
-    <div class="input-box">
-        <label>Your Number</label>
-        <input type="text" placeholder="017XXXXXXXX">
-    </div>
-
-    <div class="input-box">
-        <label>Withdraw Amount</label>
-        <input type="number" placeholder="Enter Amount">
-    </div>
-
-    <button class="btn">Submit Withdraw Request</button>
-
+<div class="box">
+<h2>Withdraw</h2>
+<input id="amount" type="number" placeholder="Amount">
+<input id="number" placeholder="bKash/Nagad Number">
+<button onclick="withdraw()">Submit</button>
 </div>
 
-</body>
-</html><script>
-    // Get current balance
-    let balance = localStorage.getItem("balance");
+<script>
+function withdraw(){
+let user = JSON.parse(localStorage.getItem("loggedUser"));
+let users = JSON.parse(localStorage.getItem("users")) || [];
+let me = users.find(u=>u.email===user.email);
 
-    if(balance === null){
-        balance = 0;
-        localStorage.setItem("balance", 0);
-    }
+let amount = parseInt(document.getElementById("amount").value);
+let number = document.getElementById("number").value;
 
-    document.getElementById("balance").innerText = "BDT " + balance;
+if(amount>me.balance){alert("Insufficient balance");return;}
+
+let reqs = JSON.parse(localStorage.getItem("withdrawRequests")) || [];
+reqs.push({email:user.email,amount,number});
+
+me.balance -= amount;
+localStorage.setItem("users",JSON.stringify(users));
+localStorage.setItem("withdrawRequests",JSON.stringify(reqs));
+
+alert("Withdraw request sent");
+location.href="wallet.html";
+}
 </script>
+
+</body>
+</html>
