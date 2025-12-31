@@ -1,103 +1,153 @@
 <!DOCTYPE html>
-<html>
+<html lang="bn">
 <head>
+    <meta charset="UTF-8">
     <title>User Signup</title>
+
     <style>
         body{
             font-family: Arial;
-            background: #f2f2f2;
+            background: #0a0a0a;
             padding: 20px;
+            color: white;
         }
         .box{
             width: 90%;
             max-width: 400px;
-            background: #fff;
-            padding: 20px;
+            background: #151515;
+            padding: 25px;
             margin: auto;
             margin-top: 40px;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(255,153,0,0.25);
+        }
+        h2{
+            text-align:center;
+            margin-bottom:20px;
+            color:#ff9800;
         }
         input{
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             margin-top: 10px;
             margin-bottom: 15px;
-            border-radius: 6px;
-            border: 1px solid #ccc;
+            border-radius: 8px;
+            border: 1px solid #333;
+            background:#1f1f1f;
+            color:white;
+            font-size:15px;
         }
         button{
             width: 100%;
-            padding: 12px;
-            background: #4CAF50;
-            color: white;
+            padding: 14px;
+            background: #ff9800;
+            color: black;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             font-size: 16px;
+            font-weight:bold;
+            cursor:pointer;
+        }
+        button:hover{
+            background:#ffa726;
         }
         img{
-            width: 80px;
-            height: 80px;
+            width: 90px;
+            height: 90px;
             border-radius: 50%;
             object-fit: cover;
             display: block;
             margin: auto;
             margin-bottom: 15px;
+            border:3px solid #ff9800;
+        }
+        .login-link{
+            text-align:center;
+            margin-top:15px;
+            font-size:14px;
+        }
+        .login-link a{
+            color:#ff9800;
+            text-decoration:none;
         }
     </style>
 </head>
+
 <body>
 
 <div class="box">
-    <h2 style="text-align:center;">Create Account</h2>
+    <h2>Create Account</h2>
 
-    <img id="preview" src="default.png">
+    <img id="preview" src="https://i.ibb.co/7KV0p9z/user.png">
 
     <input type="file" id="photo" accept="image/*">
-
     <input type="text" id="name" placeholder="Enter Name">
     <input type="email" id="email" placeholder="Enter Email">
-    <input type="password" id="pass" placeholder="Enter Password">
+    <input type="password" id="password" placeholder="Enter Password">
 
     <button onclick="signup()">Signup</button>
+
+    <div class="login-link">
+        Already have an account?
+        <a href="login.html">Login</a>
+    </div>
 </div>
 
 <script>
-
+/* Image preview */
 document.getElementById("photo").addEventListener("change", function(){
-    let reader = new FileReader();
-    reader.onload = function(e){
-        document.getElementById("preview").src = e.target.result;
+    if(this.files[0]){
+        let reader = new FileReader();
+        reader.onload = e => {
+            document.getElementById("preview").src = e.target.result;
+        };
+        reader.readAsDataURL(this.files[0]);
     }
-    reader.readAsDataURL(this.files[0]);
 });
 
-// SIGNUP FUNCTION
-function signup(){
-    let name = document.getElementById("name").value;
-    let email = document.getElementById("email").value;
-    let pass = document.getElementById("pass").value;
+/* SIGNUP FUNCTION */
+function signup() {
+
+    let name = document.getElementById("name").value.trim();
+    let email = document.getElementById("email").value.trim();
+    let pass = document.getElementById("password").value.trim();
     let photo = document.getElementById("preview").src;
 
-    if(name=="" || email=="" || pass==""){
-        alert("সব কিছু পূরণ করুন");
+    if (!name || !email || !pass) {
+        alert("সব ফিল্ড পূরণ করুন");
         return;
     }
 
-    let user = {
+    let users = JSON.parse(localStorage.getItem("users")) || [];
+
+    let exists = users.find(u => u.email === email);
+    if (exists) {
+        alert("এই ইমেইল দিয়ে একাউন্ট আগে থেকেই আছে");
+        return;
+    }
+
+    let newUser = {
+        uid: "UID" + Date.now(),
         name: name,
         email: email,
         password: pass,
-        photo: photo
+        photo: photo,
+        balance: 0,
+        matches: 0,
+        wins: 0,
+        losses: 0,
+        referCode: "REF" + Math.floor(100000 + Math.random() * 900000)
     };
 
-    // save user
-    localStorage.setItem("loggedUser", JSON.stringify(user));
+    users.push(newUser);
+    localStorage.setItem("users", JSON.stringify(users));
 
-    alert("Account Created!");
-    window.location.href = "index.html";   // WEBSITE এ পাঠানো
+    /* Auto Login */
+    localStorage.setItem("loggedUser", JSON.stringify(newUser));
+
+    alert("Signup Successful!");
+    window.location.href = "index.html";
 }
-
 </script>
 
 </body>
