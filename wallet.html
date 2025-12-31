@@ -1,95 +1,28 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>My Wallet</title>
+<title>Wallet</title>
 <style>
-body{
-    font-family: Arial;
-    background:#111;
-    color:white;
-    padding:20px;
-}
-.card{
-    max-width:400px;
-    margin:auto;
-    background:#1c1c1c;
-    padding:20px;
-    border-radius:10px;
-    text-align:center;
-}
-button{
-    width:100%;
-    padding:12px;
-    margin-top:10px;
-    border:none;
-    border-radius:6px;
-    font-size:16px;
-    cursor:pointer;
-}
-.deposit{background:#ff9800;}
-.withdraw{background:#e53935;color:white;}
+body{font-family:Arial;background:#f2f2f2;padding:20px}
+.card{background:#fff;padding:20px;border-radius:12px;text-align:center}
+button{padding:12px 20px;border:none;border-radius:8px;color:#fff;font-size:16px;margin:10px}
+.deposit{background:green}
+.withdraw{background:#007bff}
 </style>
 </head>
 <body>
 
 <div class="card">
-    <h2>💰 My Wallet</h2>
-    <h1 id="balance">৳0</h1>
+<h2>Your Balance</h2>
+<h1 id="balance">BDT 0</h1>
 
-    <input type="number" id="amount" placeholder="Enter Amount">
-    <button class="deposit" onclick="deposit()">Deposit Request</button>
-    <button class="withdraw" onclick="withdraw()">Withdraw</button>
+<button class="deposit" onclick="location.href='add-money.html'">Deposit</button>
+<button class="withdraw" onclick="location.href='withdraw.html'">Withdraw</button>
 </div>
 
 <script>
-let user = JSON.parse(localStorage.getItem("loggedUser"));
-if(!user){
-    alert("Please login first");
-    window.location.href="login.html";
-}
-
-document.getElementById("balance").innerText = "৳"+user.balance;
-
-// ===== DEPOSIT =====
-function deposit(){
-    let amt = Number(document.getElementById("amount").value);
-    if(amt<=0) return alert("Invalid amount");
-
-    let deposits = JSON.parse(localStorage.getItem("depositRequests")) || [];
-    deposits.push({
-        email:user.email,
-        amount:amt,
-        status:"pending"
-    });
-
-    localStorage.setItem("depositRequests", JSON.stringify(deposits));
-    alert("Deposit request sent to Admin");
-}
-
-// ===== WITHDRAW =====
-function withdraw(){
-    let amt = Number(document.getElementById("amount").value);
-    if(amt<=0 || amt>user.balance) return alert("Invalid amount");
-
-    user.balance -= amt;
-    localStorage.setItem("loggedUser", JSON.stringify(user));
-
-    let users = JSON.parse(localStorage.getItem("users"));
-    let u = users.find(x=>x.email===user.email);
-    u.balance = user.balance;
-    localStorage.setItem("users", JSON.stringify(users));
-
-    let withdraws = JSON.parse(localStorage.getItem("withdrawRequests")) || [];
-    withdraws.push({
-        email:user.email,
-        amount:amt,
-        time:new Date().toLocaleString()
-    });
-    localStorage.setItem("withdrawRequests", JSON.stringify(withdraws));
-
-    alert("Withdraw request sent");
-    location.reload();
-}
+let user = JSON.parse(localStorage.getItem("loggedInUser"));
+document.getElementById("balance").innerText = "BDT " + (user?.balance || 0);
 </script>
 
 </body>
