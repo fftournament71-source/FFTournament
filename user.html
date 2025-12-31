@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Profile</title>
+    <style>
+        body{
+            font-family: Arial;
+            background: #f2f2f2;
+            padding: 20px;
+        }
+        .box{
+            width: 90%;
+            max-width: 400px;
+            background: #fff;
+            padding: 20px;
+            margin: auto;
+            margin-top: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        img{
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            display: block;
+            margin: auto;
+        }
+        h2{
+            text-align:center;
+        }
+        button{
+            width:100%;
+            padding:12px;
+            margin-top:20px;
+            background:#4CAF50;
+            border:none;
+            color:white;
+            border-radius:6px;
+            font-size:16px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="box">
+    <img id="photo">
+    <h2 id="name"></h2>
+    <p style="text-align:center;" id="email"></p>
+
+    <button onclick="window.location.href='edit-profile.html'">Edit Profile</button>
+</div>
+
+<script>
+let user = JSON.parse(localStorage.getItem("user"));
+
+if(!user){
+    alert("No user found!");
+    window.location.href = "login.html";
+}
+
+document.getElementById("photo").src = user.photo;
+document.getElementById("name").innerText = user.name;
+document.getElementById("email").innerText = user.email;
+</script>
+
+</body>
+</html>

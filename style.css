@@ -1,0 +1,18 @@
+/* style.css - shared styles */
+*{box-sizing:border-box;font-family:Arial,Helvetica,sans-serif}
+body{margin:0;background:#f6f6f8;color:#222}
+.header{padding:16px;text-align:center;background:#fff;border-bottom:1px solid #eee}
+.container{width:95%;max-width:760px;margin:18px auto}
+.card{background:#fff;padding:20px;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,0.06);margin-bottom:18px}
+.btn{display:inline-block;padding:12px 20px;border-radius:10px;border:none;cursor:pointer}
+.btn-green{background:#0a8a2a;color:#fff}
+.btn-blue{background:#0b6bf1;color:#fff}
+.input,select{width:100%;padding:12px;border:1px solid #d7d7d7;border-radius:8px;margin:8px 0}
+.small{font-size:14px;color:#666}
+.row{display:flex;gap:12px}
+.col{flex:1}
+.big-balance{font-size:42px;font-weight:700;color:#0b6bf1;text-align:center}
+.menu a{display:block;padding:14px;background:#fff;border-radius:8px;margin-bottom:10px;text-decoration:none;color:#222;box-shadow:0 4px 12px rgba(0,0,0,0.03)}
+.request-item{padding:12px;border-radius:8px;background:#fff;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+.request-actions button{margin-left:8px}
+.badge{display:inline-block;padding:6px 10px;border-radius:999px;background:#eee;font-size:13px}

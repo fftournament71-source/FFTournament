@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Deposit Requests</title>
+    <style>
+        body { font-family: Arial; padding: 20px; background:#f2f2f2; }
+
+        .req {
+            background: #fff;
+            padding: 15px;
+            margin-bottom: 12px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .req p {
+            margin: 5px 0;
+        }
+
+        button {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 6px;
+            margin-right: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .approve { background: green; color: #fff; }
+        .reject { background: red; color: #fff; }
+    </style>
+</head>
+<body>
+
+<h2>Deposit Requests</h2>
+
+<div id="list"></div>
+
+<script>
+// LOAD REQUESTS
+function loadDepositRequests() {
+    let requests = JSON.parse(localStorage.getItem("depositRequests")) || [];
+    let users = JSON.parse(localStorage.getItem("users")) || [];
+
+    let list = document.getElementById("list");
+    list.innerHTML = "";
+
+    if (requests.length === 0) {
+        list.innerHTML = "<p>No deposit requests found.</p>";
+        return;
+    }
+
+    requests.forEach((req, index) => {
+        list.innerHTML += `
+            <div class="req">
+                <p><b>User:</b> ${req.email}</p>
+                <p><b>Amount:</b> ${req.amount} TK</p>
+                <p><b>Method:</b> ${req.method}</p>
+                <p><b>Number:</b> ${req.number}</p>
+                <p><b>TXID:</b> ${req.txid}</p>
+
+                <button class="approve" onclick="approveDeposit(${index})">Approve</button>
+                <button class="reject" onclick="rejectDeposit(${index})">Reject</button>
+            </div>
+        `;
+    });
+}
+
+// APPROVE
+function approveDeposit(index) {
+    let requests = JSON.parse(localStorage.getItem("depositRequests")) || [];
+    let users = JSON.parse(localStorage.getItem("users")) || [];
+
+    let req = requests[index];
+
+    let user = users.find(u => u.email === req.email);
+
+    if (user) {
+        user.balance += parseInt(req.amount);
+        localStorage.setItem("users", JSON.stringify(users));
+    }
+
+    requests.splice(index, 1);
+    localStorage.setItem("depositRequests", JSON.stringify(requests));
+
+    alert("Deposit Approved!");
+    loadDepositRequests();
+}
+
+// REJECT
+function rejectDeposit(index) {
+    let requests = JSON.parse(localStorage.getItem("depositRequests")) || [];
+
+    requests.splice(index, 1);
+    localStorage.setItem("depositRequests", JSON.stringify(requests));
+
+    alert("Deposit Rejected!");
+    loadDepositRequests();
+}
+
+loadDepositRequests();
+</script>
+
+</body>
+</html>

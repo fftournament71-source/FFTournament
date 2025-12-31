@@ -1,0 +1,61 @@
+<script>
+let url = new URLSearchParams(window.location.search);
+let matchType = url.get("type");
+
+document.getElementById("title").innerText = 
+    matchType == "BR" ? "FreeFire FullMap Matches" :
+    matchType == "CS" ? "Clash Squad Matches" :
+    matchType == "LONE" ? "Lone Wolf Matches" :
+    "CS 2 vs 2 Matches";
+
+// LocalStorage বা Database থেকে ম্যাচ ফিল্টার করো
+let matches = JSON.parse(localStorage.getItem("matches")) || [];
+
+let filtered = matches.filter(m => m.category == matchType);
+
+showMatches(filtered);
+
+function showMatches(list){
+    let box = document.getElementById("matchList");
+
+    box.innerHTML = "";
+
+    list.forEach(m => {
+        box.innerHTML += `
+        <div class="match-card">
+            <div class="header">
+                <img src="${m.image}">
+                <div>
+                    <h3>${m.title}</h3>
+                    <p>${m.time}</p>
+                </div>
+                <span class="code">#${m.id}</span>
+            </div>
+
+            <div class="info">
+                <div>WIN PRIZE<br><b>${m.win}</b></div>
+                <div>ENTRY TYPE<br><b>${m.type}</b></div>
+                <div>ENTRY FEE<br><b>${m.entry}</b></div>
+                <div>PER KILL<br><b>${m.kill}</b></div>
+                <div>MAP<br><b>${m.map}</b></div>
+                <div>VERSION<br><b>${m.version}</b></div>
+            </div>
+
+            <div class="joinBox">
+                <div class="spots">0/${m.slots}</div>
+                <button class="join">Join</button>
+            </div>
+
+            <div class="bottom">
+                <button class="room">Room Details</button>
+                <button class="prize">Total Prize Details</button>
+            </div>
+
+            <div class="countdown">
+                STARTS IN — <span>${m.timer}</span>
+            </div>
+        </div>
+        `;
+    });
+}
+</script>

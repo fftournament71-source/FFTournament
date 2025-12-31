@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Players List</title>
+
+<style>
+    body {
+        background: #000;
+        color: #fff;
+        font-family: Arial;
+        padding: 20px;
+    }
+
+    h1 {
+        text-align: center;
+        color: yellow;
+    }
+
+    .box {
+        background: #111;
+        padding: 20px;
+        border-radius: 10px;
+        margin-top: 20px;
+        box-shadow: 0 0 10px yellow;
+    }
+
+    input {
+        width: 100%;
+        padding: 12px;
+        margin-top: 10px;
+        background: #222;
+        border: 1px solid #444;
+        border-radius: 6px;
+        color: white;
+    }
+
+    button {
+        background: yellow;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 6px;
+        margin-top: 10px;
+        font-weight: bold;
+        cursor: pointer;
+        width: 100%;
+    }
+
+    button:hover {
+        background: #ffe600;
+    }
+
+    .playerItem {
+        background: #222;
+        padding: 12px;
+        border-radius: 6px;
+        margin-top: 8px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .deleteBtn {
+        background: red;
+        color: white;
+        border: none;
+        padding: 6px 10px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+</style>
+
+</head>
+<body>
+
+<h1>Match Players</h1>
+
+<div class="box">
+    <h3>Add New Player</h3>
+    <input type="text" id="playerName" placeholder="Enter Player Name">
+    <button onclick="addPlayer()">Add Player</button>
+</div>
+
+<div id="playerList" class="box">
+    <h3>All Players</h3>
+    <div id="players"></div>
+</div>
+
+<script>
+    // ----- Get Match ID -----
+    const url = new URLSearchParams(window.location.search);
+    const matchId = url.get("id");
+
+    let matches = JSON.parse(localStorage.getItem("matches")) || [];
+    let match = matches.find(m => m.id == matchId);
+
+    if (!match) {
+        document.getElementById("players").innerHTML = "<b>Match Not Found!</b>";
+    } else {
+        if (!match.players) match.players = [];
+        showPlayers();
+    }
+
+    // ----- Add Player -----
+    function addPlayer() {
+        let name = document.getElementById("playerName").value.trim();
+
+        if (!name) {
+            alert("Please enter player name");
+            return;
+        }
+
+        match.players.push(name);
+
+        saveData();
+        document.getElementById("playerName").value = "";
+        showPlayers();
+    }
+
+    // ----- Show Players -----
+    function showPlayers() {
+        let div = "";
+
+        if (match.players.length === 0) {
+            div = "<i>No players joined yet</i>";
+        } else {
+            match.players.forEach((p, index) => {
+                div += `
+                    <div class="playerItem">
+                        <span>${index + 1}. ${p}</span>
+                        <button class="deleteBtn" onclick="deletePlayer(${index})">Delete</button>
+                    </div>
+                `;
+            });
+        }
+
+        document.getElementById("players").innerHTML = div;
+    }
+
+    // ----- Delete Player -----
+    function deletePlayer(i) {
+        if (!confirm("Remove this player?")) return;
+
+        match.players.splice(i, 1);
+        saveData();
+        showPlayers();
+    }
+
+    // ----- Save Back to LocalStorage -----
+    function saveData() {
+        let index = matches.findIndex(m => m.id == matchId);
+        matches[index] = match;
+        localStorage.setItem("matches", JSON.stringify(matches));
+    }
+</script>
+
+</body>
+</html>

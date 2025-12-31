@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Matches - Gaming Tournament</title>
+
+<style>
+  :root{
+    --accent:#ffb700;
+    --bg:#f3f3f3;
+    --card:#ffffff;
+    --text:#111;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family:Arial, sans-serif;
+    background:var(--bg);
+    color:var(--text);
+  }
+
+  .header{
+    background:white;
+    padding:18px 16px;
+    font-size:22px;
+    font-weight:700;
+    box-shadow:0 2px 10px rgba(0,0,0,0.08);
+  }
+
+  .section-title{
+    margin:18px 16px;
+    font-size:20px;
+    font-weight:700;
+  }
+
+  /* grid for matches */
+  .matches-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:14px;
+    padding:0 16px 120px; /* bottom space for nav */
+  }
+
+  .match-card{
+    background:var(--card);
+    border-radius:12px;
+    overflow:hidden;
+    box-shadow:0 4px 14px rgba(0,0,0,0.08);
+    display:flex;
+    flex-direction:column;
+  }
+
+  .match-card img{
+    width:100%;
+    height:140px;
+    object-fit:cover;
+    display:block;
+  }
+
+  .match-info{
+    padding:12px;
+  }
+  .match-title{ font-size:16px; font-weight:700; margin-bottom:6px;}
+  .match-meta{ color:#7a7a7a; font-size:13px; }
+
+  /* full-row special card */
+  .big-card{
+    grid-column:1 / -1; /* span full width */
+  }
+
+  /* bottom nav */
+  .bottom-nav{
+    position:fixed;
+    left:0; right:0; bottom:0;
+    background:white;
+    display:flex;
+    justify-content:space-around;
+    align-items:center;
+    padding:10px 6px;
+    box-shadow:0 -4px 20px rgba(0,0,0,0.08);
+    border-top:3px solid var(--accent);
+  }
+  .bottom-nav a{
+    text-decoration:none;
+    color:#333;
+    font-size:14px;
+    text-align:center;
+  }
+  .bottom-nav .active{
+    color:var(--accent);
+    font-weight:700;
+  }
+
+  /* responsive */
+  @media (max-width:420px){
+    .matches-grid{ grid-template-columns:repeat(1,1fr); padding-bottom:140px;}
+  }
+</style>
+</head>
+<body>
+
+  <div class="header">Gaming Tournament</div>
+
+  <div class="section-title">My Matches</div>
+
+  <div class="matches-grid">
+
+    <!-- sample match card -->
+    <div class="match-card">
+      <img src="images/br.jpg" alt="BR Match">
+      <div class="match-info">
+        <div class="match-title">BR MATCH - Ranked</div>
+        <div class="match-meta">Date: 2025-12-10 • Time: 08:00 PM • Entry: Free</div>
+      </div>
+    </div>
+
+    <div class="match-card">
+      <img src="images/clash.jpg" alt="Clash Squad">
+      <div class="match-info">
+        <div class="match-title">Clash Squad - 4v4</div>
+        <div class="match-meta">Date: 2025-12-12 • Time: 06:00 PM • Prize: BDT 500</div>
+      </div>
+    </div>
+
+    <div class="match-card">
+      <img src="images/lone.jpg" alt="Lone Wolf">
+      <div class="match-info">
+        <div class="match-title">Lone Wolf - Solo</div>
+        <div class="match-meta">Date: 2025-12-15 • Time: 09:00 PM • Slots: 100</div>
+      </div>
+    </div>
+
+    <div class="match-card">
+      <img src="images/cs2.jpg" alt="CS 2 vs 2">
+      <div class="match-info">
+        <div class="match-title">CS 2 vs 2 - Special</div>
+        <div class="match-meta">Date: 2025-12-18 • Time: 07:00 PM • Entry: BDT 50</div>
+      </div>
+    </div>
+
+    <!-- example of a full-width notice card -->
+    <div class="match-card big-card">
+      <img src="images/br.jpg" alt="Upcoming">
+      <div class="match-info">
+        <div class="match-title">সকল খেলোয়াড়দের ক্ষেত্রে বিজ্ঞপ্তি</div>
+        <div class="match-meta">রেজিস্ট্রেশন বন্ধ হওয়ার ১২ ঘন্টা আগে নোটিশ প্রযোজ্য — সময় মিস করলে টিকিট বাতিল হতে পারে।</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- bottom navigation -->
+  <div class="bottom-nav">
+    <a href="index.html">🎮 Play</a>
+    <a href="matches.html" class="active">📄 My Matches</a>
+    <a href="results.html">📊 Results</a>
+    <a href="profile.html">👤 Profile</a>
+  </div>
+
+</body>
+</html><script src="script.js"></script>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Signup</title>
+    <style>
+        body{
+            font-family: Arial;
+            background: #f2f2f2;
+            padding: 20px;
+        }
+        .box{
+            width: 90%;
+            max-width: 400px;
+            background: #fff;
+            padding: 20px;
+            margin: auto;
+            margin-top: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        input{
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            margin-bottom: 15px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+        button{
+            width: 100%;
+            padding: 12px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+        img{
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            display: block;
+            margin: auto;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="box">
+    <h2 style="text-align:center;">Create Account</h2>
+
+    <img id="preview" src="default.png">
+
+    <input type="file" id="photo" accept="image/*">
+
+    <input type="text" id="name" placeholder="Enter Name">
+    <input type="email" id="email" placeholder="Enter Email">
+    <input type="password" id="pass" placeholder="Enter Password">
+
+    <button onclick="signup()">Signup</button>
+</div>
+
+<script>
+
+document.getElementById("photo").addEventListener("change", function(){
+    let reader = new FileReader();
+    reader.onload = function(e){
+        document.getElementById("preview").src = e.target.result;
+    }
+    reader.readAsDataURL(this.files[0]);
+});
+
+// SIGNUP FUNCTION
+function signup(){
+    let name = document.getElementById("name").value;
+    let email = document.getElementById("email").value;
+    let pass = document.getElementById("pass").value;
+    let photo = document.getElementById("preview").src;
+
+    if(name=="" || email=="" || pass==""){
+        alert("সব কিছু পূরণ করুন");
+        return;
+    }
+
+    let user = {
+        name: name,
+        email: email,
+        password: pass,
+        photo: photo
+    };
+
+    // save user
+    localStorage.setItem("loggedUser", JSON.stringify(user));
+
+    alert("Account Created!");
+    window.location.href = "index.html";   // WEBSITE এ পাঠানো
+}
+
+</script>
+
+</body>
+</html>

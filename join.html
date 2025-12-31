@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Join Match</title>
+<style>
+ body{font-family:Arial;background:#fff;padding:18px}
+ .card{max-width:640px;margin:20px auto;background:#fdf9ff;padding:18px;border-radius:12px;box-shadow:0 8px 20px rgba(0,0,0,.06)}
+ .btn{padding:12px;border-radius:10px;border:0;margin-top:10px}
+ .solo{background:#ffd166}
+ .duo{background:#a0c4ff}
+ .confirm{background:#6a4fb6;color:#fff}
+ input{width:100%;padding:12px;margin-top:8px;border-radius:8px;border:1px solid #ddd}
+</style>
+</head>
+<body>
+<div class="card" id="box">
+  <h2 id="title">Match</h2>
+  <div id="meta" style="color:#8a8a8a"></div>
+
+  <div style="margin-top:12px">
+    <div style="color:#c0392b;font-weight:bold">* অবশ্যই এখানে আপনার গেইমারের নামটি দিয়ে জয়েন করবেন *</div>
+    <div style="margin-top:8px">
+      <button id="btnSolo" class="btn solo">Solo</button>
+      <button id="btnDuo" class="btn duo">Duo</button>
+    </div>
+
+    <div id="inputs" style="margin-top:12px">
+      <!-- dynamic inputs -->
+    </div>
+
+    <div style="margin-top:12px">
+      <button id="confirmPay" class="btn confirm">Confirm and Pay</button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+(function(){
+  const params = new URLSearchParams(location.search);
+  const matchId = params.get('matchId');
+  let matches = JSON.parse(localStorage.getItem('matches')||'[]');
+  const m = matches.find(x=>x.id===matchId);
+  if(!m){ alert('Match not found'); location.href='br-matches.html'; return; }
+
+  const cur = JSON.parse(localStorage.getItem('currentUser')||'null');
+  if(!cur){ alert('Please login to join'); location.href='login.html'; return; }
+
+  document.getElementById('title').innerText = m.title;
+  document.getElementById('meta').innerHTML = `Win: ${m.winPrize} TK · Entry: ${m.entryFee} TK · Type: ${m.entryType}`;
+
+  let mode = 'Solo';
+  const inputs = document.getElementById('inputs');
+
+  function renderInputs(){
+    inputs.innerHTML = '';
+    if(mode==='Solo'){
+      inputs.innerHTML = `<input id="p1" placeholder="Player 1 Name (Gamer ID)"/>`;
+    } else {
+      inputs.innerHTML = `<input id="p1" placeholder="Player 1 Name (Gamer ID)"/><input id="p2" placeholder="Player 2 Name"/>`;
+    }
+  }
+  document.getElementById('btnSolo').onclick = function(){ mode='Solo'; renderInputs(); this.style.opacity=1; document.getElementById('btnDuo').style.opacity=.6; };
+  document.getElementById('btnDuo').onclick = function(){ mode='Duo'; renderInputs(); this.style.opacity=1; document.getElementById('btnSolo').style.opacity=.6; };
+
+  // default solo
+  document.getElementById('btnSolo').style.opacity=1;
+  document.getElementById('btnDuo').style.opacity=.6;
+  renderInputs();
+
+  document.getElementById('confirmPay').onclick = function(){
+    const p1 = document.getElementById('p1')?.value.trim();
+    const p2 = document.getElementById('p2')?.value.trim();
+    if(!p1 || (mode==='Duo' && !p2)){ alert('Please enter player names'); return; }
+
+    // check user balance
+    const users = JSON.parse(localStorage.getItem('users')||'[]');
+    const curUser = JSON.parse(localStorage.getItem('currentUser')||'null');
+    const userIndex = users.findIndex(u=>u.id===curUser.id);
+    if(userIndex===-1){ alert('User not found'); return; }
+
+    if(users[userIndex].balance < (m.entryFee||0)){ alert('Insufficient balance. Please deposit.'); return; }
+
+    // deduct
+    users[userIndex].balance -= Number(m.entryFee||0);
+    localStorage.setItem('users', JSON.stringify(users));
+    // update currentUser
+    localStorage.setItem('currentUser', JSON.stringify(users[userIndex]));
+
+    // record join: store in localStorage.joined as array of objects {matchId, userId, players:[], time}
+    const joined = JSON.parse(localStorage.getItem('joined')||'[]');
+    joined.push({
+      id: Date.now().toString(),
+      matchId: m.id,
+      userId: users[userIndex].id,
+      players: mode==='Solo' ? [p1] : [p1,p2],
+      joinTime: new Date().toISOString()
+    });
+    localStorage.setItem('joined', JSON.stringify(joined));
+
+    // increment match joinedBy list
+    let matchesArr = JSON.parse(localStorage.getItem('matches')||'[]');
+    let idx = matchesArr.findIndex(x=>x.id===m.id);
+    if(idx!==-1){
+      matchesArr[idx].joined = (matchesArr[idx].joined || 0) + 1;
+      matchesArr[idx].joinedBy = matchesArr[idx].joinedBy || [];
+      matchesArr[idx].joinedBy.push(users[userIndex].id);
+      localStorage.setItem('matches', JSON.stringify(matchesArr));
+    }
+    alert('Successfully joined. Room details will be visible to you when admin publishes.');
+    location.href='my-matches.html';
+  };
+
+})();
+</script>
+</body>
+</html>

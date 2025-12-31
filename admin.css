@@ -1,0 +1,32 @@
+body {
+    font-family: Arial;
+    background: #111;
+    color: white;
+    text-align: center;
+    margin-top: 80px;
+}
+
+.login-box, .dashboard {
+    width: 300px;
+    margin: auto;
+    background: #222;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+input {
+    width: 90%;
+    padding: 10px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 5px;
+}
+
+button {
+    padding: 10px 20px;
+    background: limegreen;
+    border: none;
+    border-radius: 5px;
+    color: black;
+    font-weight: bold;
+}

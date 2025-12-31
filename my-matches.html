@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Matches</title>
+
+    <style>
+        body {
+            background: #0a0a0a;
+            color: white;
+            font-family: Arial;
+            padding: 20px;
+            margin: 0;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .match-box {
+            background: #1a1a1a;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-left: 4px solid orange;
+        }
+
+        .title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .info {
+            font-size: 15px;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+
+<body>
+
+<h2>My Matches</h2>
+
+<div id="myMatches"></div>
+
+<script>
+    let loggedUser = JSON.parse(localStorage.getItem("loggedUser"));
+    let allMatches = JSON.parse(localStorage.getItem("joinedMatches")) || [];
+
+    let myMatches = allMatches.filter(m => m.email === loggedUser.email);
+
+    let box = document.getElementById("myMatches");
+
+    if (myMatches.length === 0) {
+        box.innerHTML = "<p style='text-align:center; opacity:0.7'>You have not joined any matches yet!</p>";
+    } else {
+        myMatches.forEach(m => {
+            box.innerHTML += `
+                <div class="match-box">
+                    <div class="title">${m.matchName}</div>
+                    <div class="info">Date: ${m.date}</div>
+                    <div class="info">Time: ${m.time}</div>
+                    <div class="info">Room ID: <b>${m.roomId || "Not Published Yet"}</b></div>
+                </div>
+            `;
+        });
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Match Results</title>
+
+    <style>
+        body { font-family: Arial; background: #f3f3f3; margin: 0; padding: 20px; }
+        h2 { font-size: 22px; }
+        .result-box {
+            background: white;
+            padding: 15px;
+            margin-bottom: 12px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .winner { font-size: 18px; font-weight: bold; color: green; }
+        .match-info { font-size: 14px; color: #444; }
+        .no-data { text-align: center; margin-top: 30px; font-size: 18px; color: #888; }
+    </style>
+</head>
+<body>
+
+    <h2>Match Results</h2>
+
+    <div id="resultList"></div>
+
+    <script>
+        function loadResults() {
+            let results = JSON.parse(localStorage.getItem("results")) || [];
+
+            let container = document.getElementById("resultList");
+
+            if (results.length === 0) {
+                container.innerHTML = "<p class='no-data'>No results found!</p>";
+                return;
+            }
+
+            results.forEach(r => {
+                container.innerHTML += `
+                    <div class="result-box">
+                        <div class="winner">Winner: ${r.winner}</div>
+                        <div class="match-info">Match: ${r.team1} vs ${r.team2}</div>
+                        <div class="match-info">Date: ${r.date} | Time: ${r.time}</div>
+                    </div>
+                `;
+            });
+        }
+
+        loadResults();
+    </script>
+
+</body>
+</html>

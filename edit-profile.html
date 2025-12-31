@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Profile</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #111;
+            color: #fff;
+            padding: 20px;
+        }
+        .box {
+            background: #222;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 400px;
+            margin: auto;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border: none;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background: orange;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            color: #000;
+            margin-top: 10px;
+        }
+        #previewImg {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin: auto;
+            display: block;
+            object-fit: cover;
+            border: 3px solid orange;
+        }
+    </style>
+</head>
+<body>
+
+<h2 style="text-align:center;">Edit Profile</h2>
+
+<div class="box">
+
+    <img id="previewImg" src="" alt="Profile">
+
+    <label>Change Profile Image:</label>
+    <input type="file" id="photoInput" accept="image/*">
+
+    <label>Full Name:</label>
+    <input type="text" id="nameInput">
+
+    <label>Email:</label>
+    <input type="email" id="emailInput">
+
+    <button onclick="saveProfile()">Save Changes</button>
+</div>
+
+<script>
+    // Load old data
+    function loadUser() {
+        let user = JSON.parse(localStorage.getItem("user"));
+
+        if (!user) return;
+
+        document.getElementById("nameInput").value = user.name;
+        document.getElementById("emailInput").value = user.email;
+        document.getElementById("previewImg").src =
+            user.photo ? user.photo : "https://i.ibb.co/2hYV2cZ/user.png";
+    }
+
+    // Update image preview
+    document.getElementById("photoInput").addEventListener("change", function() {
+        let file = this.files[0];
+        let reader = new FileReader();
+
+        reader.onload = function(e) {
+            document.getElementById("previewImg").src = e.target.result;
+        };
+
+        reader.readAsDataURL(file);
+    });
+
+    // Save user data
+    function saveProfile() {
+        let name = document.getElementById("nameInput").value;
+        let email = document.getElementById("emailInput").value;
+        let photo = document.getElementById("previewImg").src;
+
+        let user = {
+            name: name,
+            email: email,
+            photo: photo
+        };
+
+        localStorage.setItem("user", JSON.stringify(user));
+        alert("Profile updated successfully!");
+
+        window.location.href = "profile.html"; // redirect to profile
+    }
+
+    loadUser();
+</script>
+
+</body>
+</html>

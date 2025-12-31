@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Withdraw Requests</title>
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        .req {
+            background: #fff;
+            padding: 15px;
+            margin-bottom: 12px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        button {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 6px;
+            margin-right: 5px;
+        }
+        .approve { background: green; color: #fff; }
+        .reject { background: red; color: #fff; }
+    </style>
+</head>
+<body>
+
+<h2>Withdraw Requests</h2>
+
+<div id="list"></div>
+
+<script src="wallet.js"></script>
+<script>
+loadWithdrawRequests();
+</script>
+
+</body>
+</html>

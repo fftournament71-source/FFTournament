@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add BR Match</title>
+
+<style>
+body {
+    background: black;
+    color: white;
+    font-family: Arial;
+}
+.input-box {
+    width: 90%;
+    margin: 10px;
+    padding: 12px;
+    border: 2px solid yellow;
+    border-radius: 10px;
+    background: #111;
+    color: yellow;
+}
+.btn {
+    width: 90%;
+    margin: 10px;
+    padding: 15px;
+    text-align: center;
+    background: black;
+    color: yellow;
+    border: 2px solid yellow;
+    border-radius: 10px;
+    box-shadow: 0 0 15px yellow;
+}
+</style>
+
+</head>
+
+<body>
+
+<h2 style="text-align:center; color:yellow;">ADD BR MATCH</h2>
+
+<input class="input-box" id="title" placeholder="Match Title">
+<input class="input-box" id="time" placeholder="Match Time">
+<input class="input-box" id="map" placeholder="Map (Bermuda/Purgatory)">
+<input class="input-box" id="prize" placeholder="Prize Pool">
+<input class="input-box" id="perkill" placeholder="Per Kill">
+<input class="input-box" id="entry" placeholder="Entry Fee">
+
+<button class="btn" onclick="addBR()">ADD MATCH</button>
+
+<script>
+function addBR(){
+    let data = {
+        type: "BR",
+        title: title.value,
+        time: time.value,
+        map: map.value,
+        prize: prize.value,
+        perkill: perkill.value,
+        entry: entry.value
+    };
+
+    let all = JSON.parse(localStorage.getItem("matches")) || [];
+    all.push(data);
+    localStorage.setItem("matches", JSON.stringify(all));
+
+    alert("BR Match Added!");
+    window.location.href = "admin-dashboard.html";
+}
+</script>
+
+</body>
+</html>

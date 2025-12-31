@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial;
+            background: #0a0a0a;
+            color: white;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: auto;
+        }
+
+        .profile-card {
+            background: linear-gradient(145deg, #1b1b1b, #0e0e0e);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0px 4px 15px rgba(255, 153, 0, 0.2);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .profile-card img {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            border: 3px solid #ff9800;
+            margin-bottom: 10px;
+        }
+
+        .username {
+            font-size: 22px;
+            font-weight: bold;
+            margin: 5px 0;
+        }
+
+        .email {
+            font-size: 15px;
+            opacity: 0.8;
+        }
+
+        .uid, .balance {
+            margin-top: 8px;
+            font-size: 16px;
+            color: #ffb74d;
+            font-weight: bold;
+        }
+
+        /* Buttons */
+        .btn {
+            background: #1c1c1c;
+            padding: 14px;
+            border-radius: 10px;
+            font-size: 18px;
+            text-align: center;
+            margin-top: 12px;
+            cursor: pointer;
+            border: 1px solid #333;
+            transition: 0.3s;
+        }
+
+        .btn:hover {
+            background: #2b2b2b;
+        }
+
+        .logout-btn {
+            background: red;
+            color: white;
+            font-weight: bold;
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h2 style="text-align:center; margin-bottom:20px;">User Profile</h2>
+
+        <!-- Profile Card -->
+        <div class="profile-card">
+            <img src="https://i.ibb.co/7KV0p9z/user.png">
+
+            <div class="username" id="p_name">Unknown User</div>
+            <div class="email" id="p_email">No Email</div>
+
+            <div class="uid" id="p_uid">UID: 00000000</div>
+            <div class="balance" id="p_balance">Wallet Balance: ₹0</div>
+        </div>
+
+        <!-- Buttons (Edit Profile removed) -->
+        <div class="btn" onclick="go('my-matches.html')">📄 My Matches</div>
+        <div class="btn" onclick="go('wallet.html')">💰 Wallet</div>
+        <div class="btn" onclick="go('help.html')">❓ Help Center</div>
+        <div class="btn logout-btn" onclick="logout()">Logout</div>
+
+    </div>
+
+
+<script>
+    // LOAD USER DATA
+    let user = JSON.parse(localStorage.getItem("loggedUser"));
+
+    if (user) {
+        document.getElementById("p_name").innerText = user.name;
+        document.getElementById("p_email").innerText = user.email;
+        document.getElementById("p_uid").innerText = "UID: " + (user.uid || "00000000");
+        document.getElementById("p_balance").innerText = "Wallet Balance: ₹" + (user.balance || 0);
+    }
+
+    function go(page) {
+        window.location.href = page;
+    }
+
+    function logout() {
+        localStorage.removeItem("loggedUser");
+        alert("Logged out!");
+        window.location.href = "login.html";
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Match Select</title>
+    <style>
+        body{
+            font-family: Arial;
+            background: #f7f7f7;
+            padding: 20px;
+        }
+        .box{
+            max-width: 400px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            text-align:center;
+        }
+        img{
+            width: 80px;
+            height: 80px;
+            border-radius:50%;
+            object-fit:cover;
+            margin-bottom:15px;
+        }
+        .btn{
+            background:#4CAF50;
+            color:#fff;
+            padding:12px;
+            display:block;
+            margin-top:15px;
+            border-radius:6px;
+            text-decoration:none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="box">
+    <h2>Welcome!</h2>
+    <img id="photo" src="">
+    <h3 id="name"></h3>
+    <p>Email: <span id="email"></span></p>
+
+    <a class="btn" href="game1.html">Match 1</a>
+    <a class="btn" href="game2.html">Match 2</a>
+</div>
+
+<script>
+    let user = JSON.parse(localStorage.getItem("user"));
+
+    if(!user){
+        window.location.href = "signup.html";
+    } else{
+        document.getElementById("name").innerHTML = user.name;
+        document.getElementById("email").innerHTML = user.email;
+        document.getElementById("photo").src = user.photo;
+    }
+</script>
+
+</body>
+</html>

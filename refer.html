@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Refer & Earn</title>
+
+<style>
+body {
+    background: #000;
+    color: #fff;
+    font-family: Arial;
+    text-align: center;
+    padding: 20px;
+}
+
+.box {
+    background: #111;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    background: #222;
+    border: 1px solid #333;
+    color: white;
+    border-radius: 8px;
+}
+
+button {
+    width: 100%;
+    padding: 14px;
+    background: green;
+    border: none;
+    color: white;
+    margin-top: 10px;
+    border-radius: 8px;
+    font-size: 16px;
+}
+
+.copyBtn {
+    background: #444;
+}
+
+.backBtn {
+    background: #333;
+    margin-top: 15px;
+}
+</style>
+</head>
+<body>
+
+<h2>Refer & Earn</h2>
+
+<div class="box">
+    <p>Your Refer Code:</p>
+    <input id="myCode" readonly>
+
+    <button class="copyBtn" onclick="copyCode()">Copy Code</button>
+
+    <hr style="margin:20px 0; border:1px solid #222;">
+
+    <p>Enter Friend's Refer Code:</p>
+    <input id="friendCode" placeholder="Enter code">
+
+    <button onclick="applyCode()">Apply Code</button>
+    <button class="backBtn" onclick="goBack()">Back</button>
+</div>
+
+<script src="refer.js"></script>
+
+</body>
+</html>

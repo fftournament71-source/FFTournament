@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial;
+            background: #f2f2f2;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .box {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            max-width: 400px;
+            margin: auto;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #006eff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        p {
+            margin-top: 10px;
+            text-align: center;
+        }
+        a { color: #006eff; font-weight: bold; }
+    </style>
+</head>
+
+<body>
+
+    <div class="box">
+        <h1>Login</h1>
+
+        <input type="email" id="email" placeholder="Enter Email">
+        <input type="password" id="password" placeholder="Enter Password">
+
+        <button onclick="login()">Login</button>
+
+        <p>Don't have an account? <a href="signup.html">Signup</a></p>
+    </div>
+
+
+<script>
+function login() {
+    let email = document.getElementById("email").value.trim();
+    let pass = document.getElementById("password").value.trim();
+
+    if (!email || !pass) {
+        alert("Please fill all fields");
+        return;
+    }
+
+    // === ADMIN LOGIN ===
+    if (email === "mrajuan203@gmail.com" && pass === "Robiul5Nasima") {
+        localStorage.setItem("adminLogged", "true");
+        alert("Admin Login Success!");
+        window.location.href = "admin-dashboard.html";
+        return;
+    }
+
+    // === USER LOGIN ===
+    let users = JSON.parse(localStorage.getItem("users")) || [];
+    let found = users.find(u => u.email === email && u.password === pass);
+
+    if (!found) {
+        alert("Invalid Email or Password!");
+        return;
+    }
+
+    localStorage.setItem("loggedUser", JSON.stringify(found));
+    alert("Login Successful!");
+    window.location.href = "index.html";
+}
+</script>
+
+</body>
+</html>

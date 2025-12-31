@@ -1,0 +1,185 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Add Money</title>
+
+  <style>
+    body{
+      font-family: Arial, sans-serif;
+      background:#f3f4f7;
+      margin:0;
+      padding:0;
+    }
+
+    .header{
+      padding:18px;
+      text-align:center;
+      background:#fff;
+      font-size:22px;
+      font-weight:600;
+      box-shadow:0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .container{
+      padding:18px;
+    }
+
+    .card{
+      background:#fff;
+      padding:20px;
+      border-radius:14px;
+      box-shadow:0 4px 14px rgba(0,0,0,0.08);
+    }
+
+    .title{
+      font-size:20px;
+      font-weight:bold;
+      margin-bottom:12px;
+    }
+
+    .method-box{
+      flex:1;
+      text-align:center;
+      padding:14px;
+      border-radius:12px;
+      background:#fff;
+      border:2px solid transparent;
+      box-shadow:0 4px 10px rgba(0,0,0,0.05);
+      cursor:pointer;
+      transition:0.2s;
+    }
+
+    .method-box.active{
+      border:2px solid #00b894;
+      box-shadow:0 4px 12px rgba(0,180,100,0.20);
+    }
+
+    .input{
+      width:100%;
+      padding:14px;
+      border-radius:10px;
+      border:1px solid #ddd;
+      margin-top:6px;
+      margin-bottom:12px;
+      font-size:16px;
+    }
+
+    .admin-box{
+      padding:14px;
+      background:#fdfdfd;
+      border-left:4px solid #00b894;
+      border-radius:10px;
+      margin-bottom:15px;
+      box-shadow:0 4px 10px rgba(0,0,0,0.05);
+    }
+
+    .btn{
+      background:#00a651;
+      width:100%;
+      padding:14px;
+      color:#fff;
+      font-size:18px;
+      border:none;
+      border-radius:10px;
+      cursor:pointer;
+      font-weight:bold;
+      margin-top:8px;
+      box-shadow:0 4px 10px rgba(0,0,0,0.15);
+    }
+
+    .small{
+      color:#888;
+      font-size:14px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="header">Add Money</div>
+
+  <div class="container">
+    <div class="card">
+
+      <div class="title">Choose method</div>
+
+      <div style="display:flex;gap:12px;margin-bottom:15px;">
+        <div class="method-box" id="selectBkash" onclick="selectMethod('bkash')">
+          <img src="images/bkash.png" style="height:36px;">
+          <div>bKash</div>
+        </div>
+
+        <div class="method-box" id="selectNagad" onclick="selectMethod('nagad')">
+          <img src="images/nagad.png" style="height:36px;">
+          <div>Nagad</div>
+        </div>
+      </div>
+
+      <div id="adminNumberBox" class="admin-box" style="display:none"></div>
+
+      <label>Amount</label>
+      <input id="amount" class="input" placeholder="Enter amount">
+
+      <label>Payment Method</label>
+      <select id="method" class="input" onchange="selectMethod(this.value)">
+        <option value="bkash">bKash</option>
+        <option value="nagad">Nagad</option>
+      </select>
+
+      <label>Your Number</label>
+      <input id="number" class="input" placeholder="01+++++++++">
+
+      <label>Transaction ID (TxID)</label>
+      <input id="txid" class="input" placeholder="Txn ID from your mobile app">
+
+      <button class="btn" onclick="submitDeposit()">Submit</button>
+
+      <p class="small" style="margin-top:14px">
+        সাবমিট করার পর এডমিন আপনার রিকোয়েস্ট দেখবে এবং Approve করলে টাকা আপনার Wallet এ যোগ হবে।
+      </p>
+
+    </div>
+  </div>
+
+
+  <script>
+    const adminBkash = "01773170184";
+    const adminNagad = "01773170184";
+
+    function selectMethod(m){
+      document.getElementById("method").value = m;
+
+      document.getElementById("selectBkash").classList.remove("active");
+      document.getElementById("selectNagad").classList.remove("active");
+
+      if(m == "bkash"){
+        document.getElementById("selectBkash").classList.add("active");
+        showAdminNumber("bKash", adminBkash);
+      } 
+      else {
+        document.getElementById("selectNagad").classList.add("active");
+        showAdminNumber("Nagad", adminNagad);
+      }
+    }
+
+    function showAdminNumber(method, number){
+      let box = document.getElementById("adminNumberBox");
+      box.style.display = "block";
+      box.innerHTML = `
+        <b>${method} Payment Number:</b><br>
+        <span style="font-size:19px;color:#000;font-weight:bold">${number}</span><br>
+        <span class="small">এই নম্বরে টাকা পাঠিয়ে TxID দিন</span>
+      `;
+    }
+
+    function submitDeposit(){
+      alert("Deposit Submitted!");
+    }
+
+    // Default method
+    selectMethod("bkash");
+  </script>
+
+</body>
+</html>

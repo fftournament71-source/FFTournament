@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin Login</title>
+<style>
+ body{
+    background:#000;
+    color:#fff;
+    font-family:Arial;
+    padding:20px;
+ }
+ .card{
+    max-width:380px;
+    margin:60px auto;
+    background:#111;
+    padding:25px;
+    border-radius:12px;
+    box-shadow:0px 0px 15px #ffcc00;
+ }
+ h2{
+    text-align:center;
+    color:#ffcc00;
+ }
+ input,button{
+    width:100%;
+    padding:12px;
+    border-radius:7px;
+    border:0;
+    margin-top:12px;
+    background:#222;
+    color:#fff;
+    font-size:16px;
+ }
+ button{
+    background:#ffcc00;
+    color:#000;
+    cursor:pointer;
+    font-weight:bold;
+ }
+ button:hover{
+    background:#ffd633;
+ }
+</style>
+</head>
+
+<body>
+
+<div class="card">
+  <h2>Admin Login</h2>
+
+  <input id="admin_user" placeholder="Username">
+  <input id="admin_pass" type="password" placeholder="Password">
+
+  <button onclick="adminLogin()">Login</button>
+</div>
+
+<script>
+function adminLogin(){
+  let u = document.getElementById("admin_user").value.trim();
+  let p = document.getElementById("admin_pass").value.trim();
+
+  // Default admin account
+  if(u === "admin" && p === "12345"){
+      localStorage.setItem("t_admin_logged","true");
+      window.location.href = "admin.html";
+  } else {
+      alert("Incorrect username or password!");
+  }
+}
+</script>
+
+</body>
+</html>

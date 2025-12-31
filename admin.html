@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" /><meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Admin Panel</title>
+<style>
+ body{font-family:Arial;background:#fafafa;padding:20px}
+ .card{max-width:760px;margin:20px auto;background:#fff;padding:20px;border-radius:10px;box-shadow:0 6px 18px rgba(0,0,0,.06)}
+ input,select,button{width:100%;padding:10px;margin:8px 0;border-radius:8px;border:1px solid #ddd}
+ button{background:#22aa66;color:#fff;border:0}
+ .row{display:flex;gap:10px}
+ .row>div{flex:1}
+</style>
+</head>
+<body>
+<div class="card" id="adminCard">
+  <h2>Admin: Add New Match</h2>
+
+  <div id="loginArea">
+    <input id="aEmail" placeholder="Admin email (admin@site)">
+    <input id="aPass" type="password" placeholder="Password (admin123)">
+    <button id="aLogin">Admin Login</button>
+  </div>
+
+  <div id="adminArea" style="display:none">
+    <div style="margin-bottom:10px">Logged in as <b id="adminName"></b> <button id="aLogout" style="float:right">Logout</button></div>
+
+    <input id="title" placeholder="Match Title (e.g. Solo Time | Mobile)">
+    <div class="row">
+      <div><input id="winPrize" placeholder="Win Prize (e.g. 405)"></div>
+      <div><input id="entryFee" placeholder="Entry Fee (e.g. 10)"></div>
+    </div>
+    <div class="row">
+      <div><input id="perKill" placeholder="Per Kill"></div>
+      <div><input id="maxSpots" placeholder="Max spots (e.g. 50)"></div>
+    </div>
+    <div class="row">
+      <div><select id="entryType"><option>Solo</option><option>Duo</option><option>Squad</option></select></div>
+      <div><select id="map"><option>Bermuda</option><option>Purgatory</option><option>Kalahari</option></select></div>
+    </div>
+    <input id="dateTime" placeholder="Date & Time (e.g. 2025-12-04 23:00)">
+    <input id="roomCode" placeholder="Room ID (leave blank until publish)">
+    <input id="roomPass" placeholder="Room Password (leave blank until publish)">
+    <button id="addMatchBtn">Add Match</button>
+
+    <h3 style="margin-top:20px">Existing Matches</h3>
+    <div id="matchList"></div>
+  </div>
+</div>
+
+<script>
+(function(){
+  let users = JSON.parse(localStorage.getItem('users')||'[]');
+  let admin = users.find(u=>u.role==='admin');
+
+  document.getElementById('aLogin').onclick = function(){
+    let e = document.getElementById('aEmail').value.trim();
+    let p = document.getElementById('aPass').value.trim();
+    if(!e||!p){ alert('Enter credentials'); return; }
+    if(admin && admin.email===e && admin.password===p){
+      localStorage.setItem('currentUser', JSON.stringify(admin));
+      showAdmin();
+    } else alert('Invalid admin credentials');
+  };
+  function showAdmin(){
+    document.getElementById('loginArea').style.display='none';
+    document.getElementById('adminArea').style.display='block';
+    document.getElementById('adminName').innerText = admin.name;
+    loadMatches();
+  }
+  if(JSON.parse(localStorage.getItem('currentUser')||'null')?.role==='admin') showAdmin();
+
+  document.getElementById('aLogout').onclick = function(){
+    localStorage.removeItem('currentUser'); location.reload();
+  };
+
+  function loadMatches(){
+    let arr = JSON.parse(localStorage.getItem('matches')||'[]');
+    let box = document.getElementById('matchList');
+    box.innerHTML = '';
+    arr.forEach(m=>{
+      box.innerHTML += `<div style="padding:10px;border-radius:8px;background:#f4f4f4;margin-bottom:8px">
+        <b>${m.title}</b> — ${m.dateTime || ''}<br>
+        Win: ${m.winPrize} | Entry: ${m.entryFee} | Type: ${m.entryType} <br>
+        Spots: ${m.maxSpots} | Map: ${m.map} <br>
+        Room: ${m.roomCode? m.roomCode : '<i>Not published</i>'} 
+        <button data-id="${m.id}" class="publishBtn" style="float:right">Publish Room</button>
+      </div>`;
+    });
+    document.querySelectorAll('.publishBtn').forEach(b=>{
+      b.onclick = function(){
+        const id = this.getAttribute('data-id');
+        publishRoom(id);
+      };
+    });
+  }
+
+  document.getElementById('addMatchBtn').onclick = function(){
+    const m = {
+      id: Date.now().toString(),
+      title: document.getElementById('title').value || 'Untitled',
+      winPrize: document.getElementById('winPrize').value||0,
+      entryFee: Number(document.getElementById('entryFee').value||0),
+      perKill: document.getElementById('perKill').value||0,
+      maxSpots: Number(document.getElementById('maxSpots').value||50),
+      entryType: document.getElementById('entryType').value,
+      map: document.getElementById('map').value,
+      dateTime: document.getElementById('dateTime').value,
+      roomCode: document.getElementById('roomCode').value || '',
+      roomPass: document.getElementById('roomPass').value || ''
+    };
+    let arr = JSON.parse(localStorage.getItem('matches')||'[]');
+    arr.unshift(m);
+    localStorage.setItem('matches', JSON.stringify(arr));
+    alert('Match added');
+    loadMatches();
+  };
+
+  function publishRoom(id){
+    let arr = JSON.parse(localStorage.getItem('matches')||'[]');
+    const idx = arr.findIndex(x=>x.id===id);
+    if(idx===-1) return alert('Not found');
+    const code = prompt('Enter Room ID to publish (visible to joined players):', arr[idx].roomCode||'');
+    if(code===null) return;
+    const pass = prompt('Enter Room Password:', arr[idx].roomPass||'');
+    arr[idx].roomCode = code;
+    arr[idx].roomPass = pass;
+    localStorage.setItem('matches', JSON.stringify(arr));
+    alert('Published');
+    loadMatches();
+  }
+})();
+</script>
+</body>
+</html>

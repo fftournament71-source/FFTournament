@@ -1,0 +1,84 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Deposit Requests</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+<div class="header"><h2>Deposit Requests</h2></div>
+
+<div class="container">
+    <div id="requestList"></div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+<script>
+// Firebase setup
+const firebaseConfig = {
+   apiKey: "...",
+   authDomain: "...",
+   databaseURL: "...",
+   projectId: "...",
+   storageBucket: "...",
+   messagingSenderId: "...",
+   appId: "..."
+};
+firebase.initializeApp(firebaseConfig);
+
+// Load all deposit requests
+firebase.database().ref("depositRequests").on("value", snapshot => {
+    let data = snapshot.val();
+    let html = "";
+
+    for (let id in data) {
+        let r = data[id];
+
+        html += `
+            <div class="card" style="margin:8px 0">
+                <p><b>User:</b> ${r.userId}</p>
+                <p><b>Amount:</b> ${r.amount}</p>
+                <p><b>Method:</b> ${r.method}</p>
+                <p><b>Number:</b> ${r.number}</p>
+                <p><b>TxID:</b> ${r.txid}</p>
+
+                <button class="btn btn-green" onclick="approve('${id}', '${r.userId}', ${r.amount})">Approve</button>
+                <button class="btn btn-red" onclick="rejectReq('${id}')">Reject</button>
+            </div>
+        `;
+    }
+
+    document.getElementById("requestList").innerHTML = html;
+});
+
+// Approve Function
+function approve(reqId, userId, amount) {
+    // Get user balance
+    firebase.database().ref("users/" + userId).once("value", snap => {
+        let balance = snap.val().balance || 0;
+        let newBalance = Number(balance) + Number(amount);
+
+        // Update user balance
+        firebase.database().ref("users/" + userId).update({
+            balance: newBalance
+        });
+
+        // Remove request
+        firebase.database().ref("depositRequests/" + reqId).remove();
+
+        alert("Approved! User balance updated.");
+    });
+}
+
+// Reject Function
+function rejectReq(reqId) {
+    firebase.database().ref("depositRequests/" + reqId).remove();
+    alert("Request removed.");
+}
+</script>
+
+</body>
+</html>

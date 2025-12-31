@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Free Fire — Tournament Registration</title>
+<style>
+  body{background:#0b0b0b;color:#fff;font-family:Arial;padding:18px}
+  .card{max-width:520px;margin:12px auto;background:#111;padding:18px;border-radius:10px}
+  h2{color:#ffcc00;text-align:center}
+  label{display:block;margin-top:10px;color:#ddd}
+  input,select,button,textarea{width:100%;padding:10px;margin-top:8px;border-radius:8px;border:0;background:#222;color:#fff;font-size:15px}
+  button{background:#ffcc00;color:#000;font-weight:700;cursor:pointer}
+  .muted{color:#aaa;font-size:13px;margin-top:10px}
+</style>
+</head>
+<body>
+
+<div class="card">
+  <h2>Free Fire Tournament Registration</h2>
+
+  <label>Full Name</label>
+  <input id="reg_name" type="text" placeholder="Enter your name">
+
+  <label>Your Email (required)</label>
+  <input id="reg_email" type="email" placeholder="Enter email">
+
+  <label>Free Fire UID</label>
+  <input id="reg_uid" type="text" placeholder="UID">
+
+  <label>Your WhatsApp Number</label>
+  <input id="reg_whatsapp" type="tel" placeholder="01XXXXXXXXX">
+
+  <label>Team or Solo?</label>
+  <select id="reg_type">
+    <option value="">Select Type</option>
+    <option value="solo">Solo</option>
+    <option value="duo">Duo</option>
+    <option value="squad">Squad</option>
+  </select>
+
+  <label>Payment Method</label>
+  <select id="reg_method">
+    <option value="">Select Method</option>
+    <option value="bkash">Bkash</option>
+    <option value="nagad">Nagad</option>
+  </select>
+
+  <label>Transaction ID</label>
+  <input id="reg_txn" type="text" placeholder="Enter payment TXN ID">
+
+  <button onclick="submitRegistration()">Register Now</button>
+
+  <p class="muted">আপনি রেজিস্টার করলে রেজিস্ট্রেশনটি অ্যাডমিন অনুমোদন করবেন। রেজিস্ট্রেশনের স্ট্যাটাস দেখতে: <a href="my-registrations.html" style="color:#0af">My Registrations</a></p>
+</div>
+
+<script src="registrations.js"></script>
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Add New Match</title>
+
+<style>
+body {
+    background: #000;
+    font-family: Arial;
+    margin: 0;
+    padding: 20px;
+    color: gold;
+}
+
+h2 {
+    text-align: center;
+    font-size: 32px;
+    color: gold;
+    margin-bottom: 25px;
+}
+
+.formBox {
+    background: #111;
+    padding: 25px;
+    border-radius: 15px;
+    border: 2px solid gold;
+    box-shadow: 0px 0px 15px gold;
+}
+
+input, select {
+    width: 100%;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 10px;
+    border: 2px solid gold;
+    background: #000;
+    color: gold;
+    font-size: 18px;
+}
+
+button {
+    width: 100%;
+    padding: 18px;
+    background: gold;
+    color: black;
+    font-size: 22px;
+    border-radius: 10px;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+}
+</style>
+
+</head>
+<body>
+
+<h2>🔥 ADD NEW MATCH 🔥</h2>
+
+<div class="formBox">
+    <input type="text" id="matchTitle" placeholder="Match Title (Solo/Duo/Squad)">
+    <input type="text" id="matchTime" placeholder="Match Time (Ex: 2025-12-04 11:00 PM)">
+    <input type="number" id="winPrize" placeholder="Win Prize (TK)">
+    <input type="number" id="entryFee" placeholder="Entry Fee (TK)">
+    <input type="number" id="perKill" placeholder="Per Kill (TK)">
+    <input type="text" id="mapName" placeholder="Map (Bermuda, Purgatory, Alpine)">
+    <input type="text" id="version" placeholder="Version (Mobile)">
+    <input type="number" id="slots" placeholder="Total Slots (50)">
+    
+    <button onclick="saveMatch()">SAVE MATCH</button>
+</div>
+
+
+<script>
+function saveMatch() {
+
+    let matchData = {
+        title: document.getElementById("matchTitle").value,
+        time: document.getElementById("matchTime").value,
+        winPrize: document.getElementById("winPrize").value,
+        entryFee: document.getElementById("entryFee").value,
+        perKill: document.getElementById("perKill").value,
+        map: document.getElementById("mapName").value,
+        version: document.getElementById("version").value,
+        slots: document.getElementById("slots").value,
+        joined: 0
+    };
+
+    let matches = JSON.parse(localStorage.getItem("matches")) || [];
+    matches.push(matchData);
+
+    localStorage.setItem("matches", JSON.stringify(matches));
+
+    alert("Match Added Successfully!");
+    window.location.href = "admindashboard.html";
+}
+</script>
+
+</body>
+</html>

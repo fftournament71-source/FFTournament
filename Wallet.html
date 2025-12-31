@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Wallet</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="header"><h2>Wallet</h2></div>
+
+  <div class="container">
+    <div class="card">
+      <h3 style="text-align:center">Your Balance</h3>
+      <div id="balance" class="big-balance">BDT 0</div>
+      <div style="text-align:center;margin-top:14px">
+        <button class="btn btn-green" onclick="location.href='add-money.html'">Deposit</button>
+        <button class="btn btn-blue" onclick="location.href='withdraw.html'">Withdraw</button>
+      </div>
+    </div>
+
+    <div class="card menu">
+      <a href="profile.html">Profile</a>
+      <a href="admin_login.html">Admin Login</a>
+    </div>
+  </div>
+
+  <script src="wallet.js"></script>
+</body>
+</html>

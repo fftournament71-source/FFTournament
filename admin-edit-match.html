@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Match</title>
+
+    <style>
+        body {
+            background: #000;
+            color: white;
+            font-family: Arial;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 450px;
+            background: #1c1c1c;
+            padding: 20px;
+            border-radius: 12px;
+            margin: auto;
+            box-shadow: 0px 0px 10px yellow;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 8px;
+            border: none;
+            background: #2c2c2c;
+            color: white;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 20px;
+            background: yellow;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            color: black;
+        }
+
+        button:hover {
+            background: #ffea00;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h2>Edit Match</h2>
+
+        <label>Match Title</label>
+        <input type="text" id="title">
+
+        <label>Type</label>
+        <select id="type">
+            <option value="Solo">Solo</option>
+            <option value="Duo">Duo</option>
+            <option value="Squad">Squad</option>
+            <option value="Lone Wolf">Lone Wolf</option>
+        </select>
+
+        <label>Date & Time</label>
+        <input type="datetime-local" id="time">
+
+        <label>Entry Fee</label>
+        <input type="number" id="fee">
+
+        <label>Prize</label>
+        <input type="number" id="prize">
+
+        <button onclick="saveMatch()">Save Changes</button>
+    </div>
+
+    <script>
+        // URL থেকে ID নেওয়া
+        const urlParams = new URLSearchParams(window.location.search);
+        const matchId = parseInt(urlParams.get("id"));
+
+        let matches = JSON.parse(localStorage.getItem("matches")) || [];
+        let match = matches.find(m => m.id === matchId);
+
+        if (!match) {
+            alert("Match not found!");
+            window.location.href = "admin-dashboard.html";
+        }
+
+        // আগের ডাটা দেখানো
+        document.getElementById("title").value = match.title;
+        document.getElementById("type").value = match.type;
+        document.getElementById("time").value = match.time;
+        document.getElementById("fee").value = match.fee;
+        document.getElementById("prize").value = match.prize;
+
+        function saveMatch() {
+            match.title = document.getElementById("title").value;
+            match.type = document.getElementById("type").value;
+            match.time = document.getElementById("time").value;
+            match.fee = document.getElementById("fee").value;
+            match.prize = document.getElementById("prize").value;
+
+            localStorage.setItem("matches", JSON.stringify(matches));
+
+            alert("Match Updated!");
+            window.location.href = "admin-dashboard.html";
+        }
+    </script>
+
+</body>
+
+</html>

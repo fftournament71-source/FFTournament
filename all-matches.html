@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>All Matches</title>
+
+<style>
+body {
+    background: black;
+    font-family: Arial;
+    margin: 0;
+    padding: 0;
+    color: yellow;
+}
+
+.container {
+    width: 95%;
+    margin: auto;
+    margin-top: 20px;
+}
+
+h2 {
+    text-align: center;
+    font-size: 32px;
+    color: yellow;
+    text-shadow: 0 0 10px yellow;
+}
+
+.match-box {
+    border: 2px solid yellow;
+    padding: 15px;
+    border-radius: 10px;
+    margin: 12px 0;
+    background: black;
+    box-shadow: 0 0 12px yellow;
+}
+
+.btn-del {
+    padding: 10px;
+    margin-top: 10px;
+    width: 48%;
+    background: red;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 18px;
+}
+
+.btn-edit {
+    padding: 10px;
+    margin-top: 10px;
+    width: 48%;
+    background: #00aaff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 18px;
+}
+
+.btn-row {
+    display: flex;
+    justify-content: space-between;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+<h2>🔥 ALL MATCHES 🔥</h2>
+
+<div id="matchList"></div>
+
+</div>
+
+<script>
+function loadMatches() {
+    let data = localStorage.getItem("matches");
+    let arr = data ? JSON.parse(data) : [];
+    let box = "";
+
+    if (arr.length == 0) {
+        box = "<h3 style='text-align:center;color:white;'>No Match Found!</h3>";
+    }
+
+    arr.forEach((m, i) => {
+        box += `
+        <div class='match-box'>
+            <h3>🏷 ${m.title}</h3>
+            <p>⏰ Time: ${m.time}</p>
+            <p>💰 Entry: ${m.entry}</p>
+            <p>🏆 Prize: ${m.prize}</p>
+            <p>🎮 Type: ${m.type}</p>
+
+            <div class='btn-row'>
+                <button class='btn-edit' onclick='editMatch(${i})'>Edit</button>
+                <button class='btn-del' onclick='delMatch(${i})'>Delete</button>
+            </div>
+        </div>
+        `;
+    });
+
+    matchList.innerHTML = box;
+}
+
+function delMatch(index) {
+    let data = JSON.parse(localStorage.getItem("matches"));
+    data.splice(index, 1);
+    localStorage.setItem("matches", JSON.stringify(data));
+    loadMatches();
+}
+
+function editMatch(index) {
+    localStorage.setItem("editMatchIndex", index);
+    window.location.href = "edit-match.html";
+}
+
+loadMatches();
+</script>
+
+</body>
+</html>
