@@ -1,7 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="bn">
 <head>
-    <title>Add Balance</title>
+    <meta charset="UTF-8">
+    <title>Add Money</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <style>
         body {
             font-family: Arial;
@@ -9,12 +12,16 @@
             padding: 20px;
         }
         .box {
-            max-width: 400px;
+            max-width: 420px;
             background: #fff;
-            padding: 20px;
+            padding: 25px;
             margin: auto;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 15px;
         }
         input, select {
             width: 100%;
@@ -22,73 +29,104 @@
             margin: 10px 0;
             border-radius: 6px;
             border: 1px solid #ccc;
+            font-size: 15px;
         }
         button {
             width: 100%;
-            padding: 12px;
-            background: #28a745;
+            padding: 13px;
+            background: #ff9800;
             color: #fff;
             border: none;
             border-radius: 6px;
-            font-size: 16px;
+            font-size: 17px;
             font-weight: bold;
             cursor: pointer;
         }
-        h2 { text-align: center; }
+        .info {
+            background: #fff3cd;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
+
 <body>
 
 <div class="box">
-    <h2>Add Money</h2>
+    <h2>💰 Add Money</h2>
 
-    <input type="number" id="amount" placeholder="Enter Amount">
+    <div class="info">
+        Bkash / Nagad এ টাকা পাঠিয়ে Transaction ID দিন
+    </div>
+
+    <input type="number" id="amount" placeholder="Amount (৳)">
 
     <select id="method">
-        <option value="">Select Method</option>
+        <option value="">Select Payment Method</option>
         <option value="Bkash">Bkash</option>
         <option value="Nagad">Nagad</option>
     </select>
 
-    <input type="text" id="number" placeholder="Sender Number">
+    <input type="text" id="number" placeholder="Sender Mobile Number">
     <input type="text" id="txid" placeholder="Transaction ID">
 
-    <button onclick="deposit()">Submit Deposit</button>
+    <button onclick="submitDeposit()">Submit Deposit</button>
 </div>
 
+<!-- 🔥 FIREBASE -->
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
 <script>
-function deposit() {
+/* 🔴 Firebase Config (নিজেরটা বসাবে) */
+var firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+    databaseURL: "https://YOUR_PROJECT_ID-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "YOUR_PROJECT_ID"
+};
+firebase.initializeApp(firebaseConfig);
+</script>
+
+<script>
+let user = JSON.parse(localStorage.getItem("loggedUser"));
+
+if (!user) {
+    alert("Please login first");
+    window.location.href = "login.html";
+}
+
+function submitDeposit() {
     let amount = document.getElementById("amount").value;
     let method = document.getElementById("method").value;
     let number = document.getElementById("number").value;
-    let txid = document.getElementById("txid").value;
-
-    let user = JSON.parse(localStorage.getItem("loggedUser"));
-
-    if (!user) {
-        alert("Login required!");
-        return;
-    }
+    let txid   = document.getElementById("txid").value;
 
     if (!amount || !method || !number || !txid) {
-        alert("Fill all fields");
+        alert("সব তথ্য পূরণ করুন");
         return;
     }
 
-    let requests = JSON.parse(localStorage.getItem("depositRequests")) || [];
-
-    requests.push({
+    let depositData = {
         email: user.email,
-        amount: amount,
+        amount: parseInt(amount),
         method: method,
-        number: number,
-        txid: txid
+        senderNumber: number,
+        txid: txid,
+        status: "pending",
+        time: new Date().toLocaleString()
+    };
+
+    firebase.database().ref("depositRequests").push(depositData)
+    .then(() => {
+        alert("✅ Deposit request sent to Admin!");
+        window.location.href = "wallet.html";
+    })
+    .catch(err => {
+        alert("❌ Error: " + err.message);
     });
-
-    localStorage.setItem("depositRequests", JSON.stringify(requests));
-
-    alert("Deposit request sent! Wait for admin approval.");
-    window.location.href = "wallet.html";
 }
 </script>
 
