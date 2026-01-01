@@ -1,60 +1,113 @@
 <!DOCTYPE html>
-<html>
+<html lang="bn">
 <head>
-<title>Admin Deposit</title>
+<meta charset="UTF-8">
+<title>Admin Deposit Requests</title>
+
 <style>
-body{font-family:Arial;background:#f2f2f2;padding:20px}
-.req{background:#fff;padding:15px;border-radius:10px;margin-bottom:10px}
-button{padding:8px;border:none;border-radius:5px;color:#fff}
+body{
+    font-family: Arial;
+    background:#f2f2f2;
+    padding:20px;
+}
+.req{
+    background:#fff;
+    padding:15px;
+    border-radius:10px;
+    margin-bottom:12px;
+    box-shadow:0 3px 10px rgba(0,0,0,0.1);
+}
+button{
+    padding:8px 12px;
+    border:none;
+    border-radius:5px;
+    color:#fff;
+    font-weight:bold;
+    cursor:pointer;
+    margin-right:5px;
+}
 .ok{background:green}
 .no{background:red}
 </style>
 </head>
+
 <body>
 
-<h2>Deposit Requests</h2>
-<div id="list"></div>
+<h2>💰 Deposit Requests (Admin)</h2>
+<div id="list">Loading...</div>
+
+<!-- 🔥 Firebase -->
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
 <script>
-function load(){
- let req=JSON.parse(localStorage.getItem("depositRequests"))||[];
- let users=JSON.parse(localStorage.getItem("users"))||[];
- let box=document.getElementById("list");
- box.innerHTML="";
+/* 🔴 Firebase Config (নিজেরটা বসাবে) */
+var firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+    databaseURL: "https://YOUR_PROJECT_ID-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "YOUR_PROJECT_ID"
+};
+firebase.initializeApp(firebaseConfig);
+</script>
 
- if(req.length===0){box.innerHTML="No request";return;}
+<script>
+const list = document.getElementById("list");
 
- req.forEach((r,i)=>{
-  box.innerHTML+=`
-  <div class="req">
-  <b>${r.email}</b><br>
-  ${r.method} | ${r.amount} TK<br>
-  ${r.txid}<br><br>
-  <button class="ok" onclick="approve(${i})">Approve</button>
-  <button class="no" onclick="reject(${i})">Reject</button>
-  </div>`;
- });
+/* LOAD REQUESTS */
+firebase.database().ref("depositRequests").on("value", snap => {
+    list.innerHTML = "";
+
+    if (!snap.exists()) {
+        list.innerHTML = "<p>No deposit requests</p>";
+        return;
+    }
+
+    snap.forEach(child => {
+        let r = child.val();
+        let key = child.key;
+
+        list.innerHTML += `
+        <div class="req">
+            <b>User:</b> ${r.email}<br>
+            <b>Amount:</b> ${r.amount} TK<br>
+            <b>Method:</b> ${r.method}<br>
+            <b>Sender:</b> ${r.senderNumber}<br>
+            <b>TXID:</b> ${r.txid}<br>
+            <b>Status:</b> ${r.status}<br><br>
+
+            <button class="ok" onclick="approve('${key}', '${r.email}', ${r.amount})">Approve</button>
+            <button class="no" onclick="reject('${key}')">Reject</button>
+        </div>
+        `;
+    });
+});
+
+/* APPROVE */
+function approve(key, email, amount) {
+
+    // USER BALANCE UPDATE
+    firebase.database().ref("users").once("value", snap => {
+        snap.forEach(child => {
+            let user = child.val();
+            if (user.email === email) {
+                let newBal = (user.balance || 0) + amount;
+                firebase.database().ref("users/" + child.key + "/balance").set(newBal);
+            }
+        });
+    });
+
+    // DELETE REQUEST
+    firebase.database().ref("depositRequests/" + key).remove();
+
+    alert("✅ Deposit Approved!");
 }
 
-function approve(i){
- let req=JSON.parse(localStorage.getItem("depositRequests"));
- let users=JSON.parse(localStorage.getItem("users"));
- let r=req[i];
- let u=users.find(x=>x.email===r.email);
- if(u){u.balance+=r.amount;}
- localStorage.setItem("users",JSON.stringify(users));
- req.splice(i,1);
- localStorage.setItem("depositRequests",JSON.stringify(req));
- load();
+/* REJECT */
+function reject(key) {
+    firebase.database().ref("depositRequests/" + key).remove();
+    alert("❌ Deposit Rejected!");
 }
-
-function reject(i){
- let req=JSON.parse(localStorage.getItem("depositRequests"));
- req.splice(i,1);
- localStorage.setItem("depositRequests",JSON.stringify(req));
- load();
-}
-load();
 </script>
 
 </body>
