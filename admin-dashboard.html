@@ -1,65 +1,97 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Admin Dashboard</title>
+<title>Admin Dashboard</title>
 
 <style>
-body {
-    background: black;
-    font-family: Arial;
-    margin: 0;
-    padding: 0;
-    color: yellow;
+body{
+    font-family:Arial;
+    background:#f2f2f2;
+    padding:20px;
 }
-
-h2 {
-    text-align: center;
-    color: yellow;
-    margin-top: 20px;
-    font-size: 28px;
+.card{
+    background:#fff;
+    padding:15px;
+    margin:10px 0;
+    border-radius:10px;
+    box-shadow:0 3px 8px rgba(0,0,0,0.1);
 }
-
-.btn {
-    display: block;
-    width: 85%;
-    margin: 15px auto;
-    padding: 18px;
-    background: #000;
-    color: #ff0;
-    font-size: 20px;
-    text-align: center;
-    text-decoration: none;
-    border-radius: 12px;
-    border: 2px solid #ff0;
-    box-shadow: 0 0 15px #ff0;
+a{
+    display:block;
+    padding:12px;
+    background:#000;
+    color:#fff;
+    margin-top:10px;
+    text-decoration:none;
+    text-align:center;
+    border-radius:6px;
+    font-weight:bold;
+}
+.logout{
+    background:red;
 }
 </style>
 </head>
 
 <body>
 
-<h2>🔥 SELECT MATCH TYPE 🔥</h2>
+<h2>📊 Admin Dashboard</h2>
 
-<a class="btn" href="add-lonwolf-match.html">🐺 ADD LON WOLF MATCH</a>
+<div class="card" id="stats">
+    Loading...
+</div>
 
-<a class="btn" href="add-clashsquad-match.html">⚔️ ADD CLASH SQUAD MATCH</a>
+<a href="admin-deposit.html">💰 Deposit Requests</a>
+<a href="admin-withdraw.html">🏧 Withdraw Requests</a>
+<a href="admin-users.html">👥 All Users</a>
+<a href="#" class="logout" onclick="logout()">🚪 Logout</a>
 
-<a class="btn" href="add-2v2-match.html">👥 ADD 2 vs 2 MATCH</a>
+<!-- 🔥 Firebase -->
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
-<!-- 🔥 নতুন যুক্ত করা BR MATCH বাটন -->
-<a class="btn" href="add-br-match.html">🔥 ADD BR MATCH</a>
+<script>
+var firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+  databaseURL: "https://YOUR_PROJECT_ID-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "YOUR_PROJECT_ID"
+};
+firebase.initializeApp(firebaseConfig);
+</script>
 
-<br><br>
+<script>
+// 🔐 AUTH GUARD
+firebase.auth().onAuthStateChanged(user=>{
+    if(!user){
+        location.href="admin-login.html";
+    }
+});
 
-<h2>🔥 ADMIN OPTIONS 🔥</h2>
+// 📊 LOAD STATS
+firebase.database().ref("users").on("value",snap=>{
+    let totalUsers = 0;
+    let totalBalance = 0;
 
-<a class="btn" href="all-matches.html">📋 ALL MATCHES</a>
+    snap.forEach(c=>{
+        totalUsers++;
+        totalBalance += c.val().balance || 0;
+    });
 
-<a class="btn" href="all-users.html">👤 ALL USERS</a>
+    document.getElementById("stats").innerHTML = `
+        👥 Total Users: <b>${totalUsers}</b><br>
+        💰 Total Balance: <b>${totalBalance} TK</b>
+    `;
+});
 
-<a class="btn" href="deposit-requests.html">💰 DEPOSIT REQUESTS</a>
-
-<a class="btn" href="withdraw-requests.html">💸 WITHDRAW REQUESTS</a>
+// 🚪 LOGOUT
+function logout(){
+    firebase.auth().signOut().then(()=>{
+        location.href="admin-login.html";
+    });
+}
+</script>
 
 </body>
 </html>
